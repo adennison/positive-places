@@ -1,0 +1,95 @@
+{% extends "pos/base.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+    <script type="text/javascript" src="{% static "js/OpenLayers-2.12/OpenLayers.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/jquery-1.7.2.min.js" %}"></script>
+    <link type="text/css" rel="stylesheet" href="{% static "js/jquery-ui-1.8.23.custom/css/ui-lightness/jquery-ui-1.8.23.custom.css" %}"/>
+    <script type="text/javascript" src="{% static "js/jquery-ui-1.8.23.custom/js/jquery-ui-1.8.23.custom.min.js" %}"></script>
+    <script src="http://maps.googleapis.com/maps/api/js?sensor=false&v=3.7"></script>
+    <link rel="stylesheet" href="{% static 'js/jquery-jGrowl-1.2.13/jquery.jgrowl.css' %}" type="text/css">
+    <script type="text/javascript" src="{% static 'js/jquery-jGrowl-1.2.13/jquery.jgrowl.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/bootstrap-2.3.2/js/bootstrap.min.js' %}"></script>
+{% endblock head %}
+
+{% block content %}
+
+    <div id="project_name">
+        <div class="row-fluid">
+            <div class="span6">
+                <h2>Upload shapefile region for project: {{ project.project_name }}</h2>
+            </div>
+            <div class="span6">
+                <h2>
+                    <a href="{% url 'load_region' project.region.pk %}" class="btn btn-primary normal-weight" id="view_stats_button">View Stats</a>
+                    <a href="{% url 'scenario_modelling' project.pk %}" class="btn btn-primary normal-weight" id="scenario_calculator_button">Scenario Calculator</a>
+                    <a href="{% url 'manage_projects' %}" class="btn btn-primary normal-weight" id="manage_projects_button">Manage Projects</a>
+                </h2>
+            </div>
+        </div>
+    </div>
+
+    {% for err in errors %}
+        <script>pos.show_growl("{{ err }}")</script>
+<!--     <div>{{ err }}</div> -->
+    {% endfor %}
+
+    {% if messages %}
+        {% for message in messages %}
+            <script>pos.show_growl("{{ message }}")</script>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Map Container -->
+    <div id = "map_container">
+        <div id="map" ></div>
+            <script type="text/javascript">
+                jQuery(window).load(function() {
+                    pos.map.geoserverURL = '{{ geoserver_url }}';
+                    pos.map.create_upload_user_region_map(
+                        'map',
+                        '{{ userRegionWkt }}',
+                        '{{ userRegionPk }}'
+                    );
+                });
+            </script>
+    </div>
+
+    <form id="upload_shapefile_form" method='POST' enctype='multipart/form-data' action="{% url 'pos.views.file_upload.upload_region' %}">
+    {% csrf_token %}
+        <table>
+            <tr>
+                <td><input id="upload_button" type="submit" value="  Upload Shapefile  "></td>
+                <td><input style="width: 250px;" id="region_upload_button" name="User_Region_Shapefile" type="file"/></td>
+            </tr>
+            <tr>
+                <td><input name="pk" type="hidden" value="{{ userRegionPk }}" style="display: none;"></td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td>
+                    <img id="progress_display" alt="Upload Progress" style="display: none;" class="center" width="280" height="20"
+                    src="{% static "js/jquery-ui-1.8.23.custom/css/ui-lightness/ajax_indeterminate_loading_bar.gif" %}">
+                </td>
+            </tr>
+            <tr>
+                <td id="upload_text" style="display: none;">Uploading your region and calculating area/population statistics.<br>This may take a few moments.</td>
+            </tr>
+        </table>
+    </form>
+
+    <p id="draw_instructions" class ="green">
+        Instructions for uploading a polygon:
+    </p>
+    <ol id="draw_instructions" class="green">
+        <li>Data must be in ESRI shapefile format (.shp)</li>
+        <li>The shapefile must be projected to GDA94 MGA zone 50 (UTM) or WGS84 (Lat/Long)</li>
+        <li>The shapefile must be zipped</li>
+        <li>Each shapefile should contain one polygon. The total area of the polygon should not exceed {{ max_hectares }} hectares</li>
+        <li>Choose your file by browsing for it, then click the Upload Shapefile button</li>
+        <li>Your uploaded polygon will be displayed on the map and automatically save</li>
+    </ol>
+
+{% endblock content %}

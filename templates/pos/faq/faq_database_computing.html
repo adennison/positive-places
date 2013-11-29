@@ -1,0 +1,71 @@
+{% extends "pos/base.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+    <script type="text/javascript" src="{% static "js/jquery-1.7.2.min.js" %}"></script>
+	<link type="text/css" rel="stylesheet" href="{% static "js/jquery-ui-1.8.23.custom/css/ui-lightness/jquery-ui-1.8.23.custom.css" %}"/>
+    <script type="text/javascript" src="{% static "js/jquery-ui-1.8.23.custom/js/jquery-ui-1.8.23.custom.min.js" %}"></script>
+    <link href="{% static "css/posFaq.css" %}" rel="stylesheet" type="text/css" media="screen" />
+{% endblock head %}
+
+{% block content %}
+	<div id = "home_container" style="height: 550px; overflow-y: scroll;">
+		<a href="/cbeh/pos/faq/#tabs-4">Back to Database Creation</a>
+		<h2>STEP 5 - Computing Population Catchments</h2>
+		<p>A catchment area (sometimes referred to as a service area) is the area that can be reached within a defined walking distance along the road network from the boundary of the park.  </p>
+
+		<p>The size of the catchment areas (i.e., the distance along the road network from the park) was derived in accordance with the size of the park. The tables below indicate the catchment areas assigned to each park under the POS Tool classifications and for the DSR’s classification of Parks.</p> 
+		<p>The proportions of the total LGA or suburb population within the specified park catchment areas were then computed. In addition, the proportion of the population by age (years) groups (0-4; 5-14; 15-19; 20-24; 25-34, etc) within the park catchments was determined.  Population data were obtained from the Australian Bureau of Statistics (ABS) 2011, which is provided spatially at the SA1s geographic level (the smallest spatial unit at which data relevant population data is collected).</p>
+
+		<a href="{% static "images/table4.jpg" %}"><img
+			id="classsystem"
+			style="margin:0px auto; float:left "
+			alt="Park Classification System"
+			src="{% static "images/table4.jpg" %}"
+		></a>
+		
+		<a href="{% static "images/table5.jpg" %}"><img
+			id="classsystem"
+			style="margin:0px auto; float:left clear:right;"
+			alt="Park Classification System"
+			src="{% static "images/table5.jpg" %}"
+		></a>
+		
+		<p style="text-align:center;" ><b>POS Tool and DSR park size classifications and catchment areas</b></p>
+
+		<a href="{% static "images/Population_Catchment_Polygon_TwoSizes.jpg" %}"><img
+			id="classsystem"
+			style="margin:0px auto; display:block;"
+			alt="Park Classification System"
+			src="{% static "images/Population_Catchment_Polygon_TwoSizes.jpg" %}"
+		></a>
+		
+		<p style="text-align:center;" ><b>Service Area Generation: Different sized catchment Park catchment areas / service areas) generated along the road network from district and small neighbourhood parks</b></p>
+		
+		<br/>
+		<p><b>The following steps were undertaken to identify the percentage of the total suburb and LGA populations with access to different parks</b></p>
+		
+		<ol>
+			<li>Catchment (service) areas were generated along the road network from all parks (dependent upon the size of the park – see the POS Tool and DSR park size classifications and catchment areas table)</li>
+			<li>Catchment areas were dissolved (i.e., merged) by park type</li>
+			<li>Service areas (for each park type) were overlayed with SA1s (see Population Proportion figure)</li>
+			<li>The proportion of the catchment areas that overlapped an SA1 was determined and the proportion of population is derived per SA1 (for each park type) (see Population Proportion figure)</li>
+			<li>Population data were summed and the percentage of the total LGA population within the different park size catchment areas calculated</li>
+			<li>The proportion of the total LGS population located within any park catchment was also calculated</li>
+		</ol>
+		
+		<p>We acknowledge this method contains the assumption of equal distribution of population across an SA1 (modifiable area unit problem – or MAUP).</p>
+		
+		<a href="{% static "images/Population_Catchment_Polygon_SA1.jpg" %}"><img
+			id="classsystem"
+			width="50%"
+			style="margin:0px auto; display:block;"
+			alt="Park Classification System"
+			src="{% static "images/Population_Catchment_Polygon_SA1.jpg" %}"
+		></a>
+
+		<p style="text-align:center;"><b>Population Proportion: Park catchment areas (hashed polygon) overlayed with SA1s and the proportion of the catchment areas overlapping each SA1 determined</b></p>
+		
+	</div>
+{% endblock content %}

@@ -1,0 +1,94 @@
+{% extends "pos/base.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+    <script src="{% static "js/OpenLayers-2.11/lib/OpenLayers.js" %}"></script>
+{% endblock head %}
+
+{% block content %}
+	
+	<!-- Map Container -->
+	<div id = "map_container">
+		<div id="map"></div>
+			<script type="text/javascript">
+				jQuery(window).load(function() {
+					pos.map.create_map('map', '{{ suburb.mpoly.wkt }}');
+				});
+			</script>
+			<div id="legend_img">
+            <a title="POS Legend">
+            <img id="legend" alt="POS Legend" src="{% static "images/legend_sml.PNG" %}">
+            </a>
+			</div>
+			<div>
+            <p><a class="reportProblem" href="mailto:postool-sph@uwa.edu.au?Subject=POS%20Tool" alt="Email us" title="Email us">Report a problem</a></p>
+			</div>
+	</div>
+	
+	<!-- Table Container -->
+	<div id = "table_container">
+		<p><strong>{{ suburb.name }} Statistics</strong><p>
+		<table>
+			<tbody>
+				<tr>
+					<th>Area &#40;Ha&#41;</th>
+					<td>{{ suburb.area }}</td>
+				</tr>
+				<tr>
+					<th>Population</th>
+					<td>{{ suburb.population }}</td>
+				</tr>
+				<tr>
+					<th>LGAs</th>
+					<td>
+						{% for lga in suburb.lga_set %}
+							<div>
+								<a href={{ lga.get_absolute_url }}>{{ lga.short_name }}</lga>
+							</div>
+						{% endfor %}
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<p><strong>POS Statistics</strong><p>
+		<table>
+			<thead>
+				<tr>
+					<th>Size</th>
+					<th>Type</th>
+					<th alt="The area of each POS type as a % of the total area of POS" >Area &#40;Ha&#41;</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for pos in suburb.pos_set %}
+					<tr>
+						<td><a href="{{ pos.get_absolute_url }}">{{ pos.get_size_class_display }}</a></td>
+						<td>{{ pos.get_pos_type_c_display }}</td>
+						<td>{{ pos.area }}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+	
+	<!-- Print, Export, Heatmaps -->
+	<div id = "bottom_container">
+		<div class = "small">
+			<ul id = "print">
+				<li>
+					<a href="#">PRINT DETAILS</a>
+				</li>
+				<li>
+					<a href="#">EXPORT DATA</a>
+				</li>
+			</ul>
+			<div id = "heat_map">
+				<p>Turn on heat map for service provision</p>
+				<p>Turn on heat map for public transportation</p>
+			</div>
+		</div>
+	</div>
+
+{% endblock content %}

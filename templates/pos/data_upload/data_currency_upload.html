@@ -1,0 +1,64 @@
+{% extends "pos/base_user_stats.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+	<script type="text/javascript" src="{% static "js/jquery-1.7.2.min.js" %}"></script>
+	<script type="text/javascript" src="{% static "js/jquery-ui-1.8.23.custom/js/jquery-ui-1.8.23.custom.min.js" %}"></script>
+	<link type="text/css" href="{% static "js/jquery-ui-1.8.23.custom/css/ui-lightness/jquery-ui-1.8.23.custom.css" %}" rel="stylesheet"/>
+{% endblock head %}
+
+    {% block content %}
+    <div id="home_container">
+    <h2>Upload a new Data Currency PDF.</h2>
+
+    {% for err in errors %}
+        <div>{{ err }}</div>
+    {% endfor %}
+
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <h2> <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li> </h2>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <form method='POST' enctype='multipart/form-data' action='{% url 'pos.views.file_upload.load_data_currency' %}'>
+        {% csrf_token %}
+    	<table id="data_input">
+            <tr>
+                <td>Data Currency PDF (.pdf):</td>
+                <td><input size="35" type="file" name="Data_Currency_PDF" class="file"/></td>
+                <td><input type="submit" value="Upload" onclick="showUploadProgress();"></td>
+                <td></td>
+            </tr>
+        </table>
+    </form>
+    <table>
+        <tr>
+            <td></td>
+            <td>
+                <img id="progress_display_1" alt="Upload Progress" style="visibility:hidden;" class="center" width="280" height="20"
+                src="{% static "js/jquery-ui-1.8.23.custom/css/ui-lightness/ajax_indeterminate_loading_bar.gif" %}">
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td id="upload_text_1" style="visibility:hidden;">Uploading file. This will take a few moments.</td>
+        </tr>
+    </table>
+    <script>
+        function showUploadProgress() {
+            document.getElementById('progress_display_1').style.visibility='visible';
+            document.getElementById('upload_text_1').style.visibility='visible';
+        }
+    </script>
+
+    <p></p>
+    <!-- <legend>Notes:</legend> -->
+    <p></p>
+
+    </div>
+
+    {% endblock content %}

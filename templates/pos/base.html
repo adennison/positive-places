@@ -1,0 +1,134 @@
+{% load staticfiles %}
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+<html>
+    <head>
+        <title>{% block title %}CBEH POS{% endblock title %}</title>
+
+            <link rel="stylesheet" href="{% static 'js/bootstrap-2.3.2/css/bootstrap.min.css' %}" type="text/css">
+
+            <link rel="stylesheet" type="text/css" href="{% static "css/reset/cssreset-min.css" %}">
+            <link rel="stylesheet" type="text/css" href="{% static "css/reset/cssbase-min.css" %}">
+            <link rel="stylesheet" type="text/css" href="{% static "css/reset/cssfonts-min.css" %}">
+
+            <link href="{% static "css/pos.css" %}" rel="stylesheet" type="text/css" media="screen" />
+
+            <script src="{% static "js/jquery-1.7.2.min.js" %}"></script>
+            <script type="text/javascript" src="{% static "js/jquery-ui-1.8.23.custom/js/jquery-ui-1.8.23.custom.min.js" %}"></script>
+            <link type="text/css" rel="stylesheet" href="{% static "js/jquery-ui-1.8.23.custom/css/ui-lightness/jquery-ui-1.8.23.custom.css" %}"/>
+            <script src='{% static "js/pos.js" %}'></script>
+            <script src='{% static "js/login_modal.js" %}'></script>
+            <script>
+                jQuery(function() {
+                    pos.user_login.create_login_modal();
+                });
+            </script>
+        {% block head %}{% endblock head %}
+    </head>
+
+    <body>
+     <div id="container">
+
+
+        <!-- Title, Logo (above menu) -->
+            <div id ="header">
+            {% if user.is_authenticated %}
+                <a class="login" href="/cbeh/pos/logout/">Log Out {{ user.first_name }} {{ user.last_name }}</a>
+            {% else %}
+                <a class="login" href="#" id="opener">Log In / Register</a>
+            {% endif %}
+
+            <div id="dialog" title="Login" style="display: none;">
+                <form method='POST' enctype='multipart/form-data' action='{% url "pos.views.login.login_user" %}'>
+                    {% csrf_token %}
+                    <table id="popup_login">
+                        <tr>
+                            <td>Username:</td>
+                            <td id="id_username"><input type="text" name="username"/></td>
+                        </tr>
+                        <tr>
+                            <td class="name">Password:</td>
+                            <td id="id_password" class="inputs"><input type="password" name="password"/></td>
+                        </tr>
+                    </table>
+                    <input id="id_login_button" type="submit" value="Log In" style="display: none;"/>
+                    <input type="hidden" name="redirect_path" value="{{ request.path }}"/>
+                </form>
+                <p><a class="resetLink" href="/cbeh/pos/user/register/">Click here to register</a></p>
+                <p><a class="resetLink" href="/cbeh/pos/accounts/password/reset/">Click here if you forgot your password</a></p>
+            </div>
+
+            <!-- <div id ="banner">-->
+                <a title="" >
+                        <img id="banner" alt="Positive Places"
+                        src="{% static "images/header_positive.png" %}"></a>
+                <div id ="logo">
+                    <a title="">
+                        <img alt=""
+                        src="{% static "images/logo_pplaces.png" %}">
+                    </a>
+                </div>
+            </div>
+            <!-- Navigation -->
+            <div id="nav">
+                <ul id="nav_container">
+                    <li style="width:85px"><a href="/cbeh/pos/contact_us/">CONTACT US</a></li>
+                    <li><a href="/cbeh/pos/about/">ABOUT</a>
+                        <ul id ="about">
+                            <li><a href="/cbeh/pos/faq/" style="padding-right: 85%">FAQ</a></li>
+                            <li><a href="/cbeh/pos/research_and_publications/">RESEARCH AND PUBLICATIONS</a></li>
+                            <li><a href='{% static "documents/POS_Tool_Users_Guide.pdf" %}' target="_blank">USER GUIDE</a></li>
+                            <li><a href=/{{ MEDIA_URL }}data_currency_document/POS_Tool_Data_Currency_Guide.pdf target="_blank">DATA CURRENCY</a></li>
+                            {% if user.is_staff %}
+                                <li class="highlight"><a href="/cbeh/pos/file_upload/">UPLOAD POS DATASETS</a></li>
+                                <li class="highlight"><a href="/cbeh/pos/load_data_currency/">UPLOAD DATA CURRENCY PDF</a></li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                    <li style="width:75px"><a href="/cbeh/pos/project/advanced/">ADVANCED</a></li>
+                    <li><a href="/cbeh/pos/search/">SEARCH</a></li>
+                    <li><a href="/cbeh/pos/welcome/">HOME</a></li>
+                </ul>
+            </div>
+            <!-- Title, Logo (under menu) -->
+            <div id = "underheader">
+                <a title="">
+                        <img alt="Positive Places"
+                        src="{% static "images/header_places.png" %}">
+                    </a>
+
+                <div id ="underlogo">
+                    <a title="">
+                        <img alt="Positive Places Logo"
+                        src="{% static "images/logo_pplaces_rotate.png" %}">
+                    </a>
+                </div>
+            </div>
+            <!-- Content -->
+            <div id = "content_container">
+                {% block content %}
+
+                {% endblock content %}
+            </div>
+            <!-- Footer -->
+            <div id = "footer">
+                <div id = "footer_container">
+                    <p>This project is supported by the
+                    <a target="_blank" title="ANDS Website" href="http://www.ands.org.au/">
+                    Australian National Data Service (ANDS)</a>. ANDS is supported by the
+                    Australian Government through the National Collaborative Research Infrastructure
+                    Strategy Program and the Education Investment Fund (EIF) Super Science Initiative</p>
+                    <a target="_blank" title="Go to the UWA website" href="http://www.uwa.edu.au/">
+                        <img alt="UWA logo" src="{% static "images/logo_uwa.png" %}"></a>
+                    <a target="_blank" title="Go to the ANDS website" href="http://www.ands.org.au/">
+                        <img alt="ANDS logo" src="{% static "images/logo_ands.png" %}"></a>
+                </div>
+            </div>
+    </div>
+    </body>
+
+</html>
+
+
+

@@ -1,0 +1,32 @@
+This is an automatically generated email, please do not reply.
+
+
+Hi {{ user_instance.first_name }},
+
+
+You have been registered as a user for the {{ site.name }}.
+
+To start using your account, go to http://{{ site.domain }}{% url 'welcome' %} and log into the system using your new username and password.
+
+Username: {{ user_instance.username }}
+{% if password %}Password: {{ password }}{% endif %}
+
+You shouldn't pass this email on to anyone else, as this is your personal account.
+
+If you need any help with using the system, make sure you have a look at the FAQ for the system, available from:
+
+http://{{ site.domain }}{% url 'faq' %}
+
+You can also contact us at:
+http://{{ site.domain }}{% url 'contact_us' %}
+
+
+Welcome to the {{ site.name }}!
+
+
+--------------------------
+This project is supported by the Australian National Data Service (ANDS).
+ANDS is supported by the Australian Government through the
+National Collaborative Research Infrastructure Strategy Program and the
+Education Investment Fund (EIF) Super Science Initiative.
+{{ site.domain }}

@@ -1,0 +1,98 @@
+/*******************************************/
+/* CSS rules that apply to all FAQ pages */
+/*******************************************/
+body {
+    font-family: arial,helvetica,clean,sans-serif;
+    font-size: 13.5px;
+    line-height: 1.3em;
+    margin: 0;
+}
+
+table {
+	width:100%;
+}
+
+a:visited {
+	color: #77933C;
+	font-weight: bold;
+}
+
+a:link {
+	color: #77933C;
+}
+
+a:active {
+	color: #77933C;
+	font-weight: bold;
+}
+
+/**********************************/
+/* Specific list changes */
+/**********************************/
+
+#disc_list li {
+  	color:#444; /* set color of list item to a dark gray */
+	list-style:none; /* if you’re not already using a reset */
+}
+
+#disc_list li:before {
+  	color:#77933C; /* set color to green */
+  	content:"\2022"; /* /2022 is the numerical unicode for &bull; */
+  	font-size:1.5em; /* set the font-size of the bullet if necessary. Make sure to use em or %*/
+  	padding-right:.25em; /* give the bullet some padding from the text Make sure to use em*/
+  	position:relative;
+    top:.1em; /* set the vertical position of the bullet if necessary. Make sure to use em or % */
+}
+
+ol {
+	list-style-position:inside;
+}
+
+ol li {
+	color:#77933C;
+}
+
+/**********************************/
+/* Specific tab changes */
+/**********************************/
+
+#tabs {
+    font-family: arial,helvetica,clean,sans-serif;
+    font-size: 13.5px;
+    line-height: 1.3em;
+    margin: 0;
+}
+
+.ui-tabs-vertical {
+	height: 44em;
+}
+
+.ui-tabs-vertical .ui-tabs-nav {
+	padding: .2em .1em .2em .2em;
+	float: left; width: 12em;
+}
+
+.ui-tabs-vertical .ui-tabs-nav li {
+	clear: left;
+	width: 100%;
+	border-bottom-width: 1px !important;
+	border-right-width: 0 !important;
+	margin: 0 -1px .2em 0;
+}
+
+.ui-tabs-vertical .ui-tabs-nav li a {
+	display:block;
+}
+
+.ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active {
+	padding-bottom: 0;
+	padding-right: .1em;
+	border-right-width: 1px;
+	border-right-width: 1px;
+}
+
+.ui-tabs-vertical .ui-tabs-panel {
+	padding: 1em;
+	float: right;
+	width: 58em;
+}

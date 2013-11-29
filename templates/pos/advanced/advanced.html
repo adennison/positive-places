@@ -1,0 +1,43 @@
+{% extends "pos/base.html" %}
+
+{% load staticfiles %}
+
+
+{% block head %}
+    <script type="text/javascript" src="{% static 'js/bootstrap-2.3.2/js/bootstrap.min.js' %}"></script>
+{% endblock head %}
+
+
+{% block content %}
+
+    <!-- Area Container -->
+    <div id = "home_container">
+
+        <h2>Advanced Functions</h2>
+
+        <p class="green">Here you can draw or upload your own area of interest (polygon) or select an existing suburb or LGA boundary to:</p>
+
+        <p>1. View summary statistics on POS provision and population level access within the area you define;</p>
+
+        <p>2. Use the scenario calculator to assess the impact of changes in population size and structure or changes in POS provision.<p><br>
+
+        <div class="row-fluid">
+            <p>Select from one of the four options below</p>
+        </div>
+        <div class="row-fluid">
+            <div class="span3">
+                <a href='{% url "add_project" %}?next=draw_project' class="btn btn-large">Draw your own area of interest</a>
+            </div>
+            <div class="span3">
+                <a href='{% url "add_project" %}?next=upload_project' class="btn btn-large">Upload your own area of interest</a>
+            </div>
+            <div class="span3">
+                <a href='{% url "add_project" %}?next=select_lga_or_suburb' class="btn btn-large">Select an existing suburb or LGA</a>
+            </div>
+            <div class="span3">
+                <a href='{% url "manage_projects" %}' class="btn btn-large">View all your saved projects</a>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}

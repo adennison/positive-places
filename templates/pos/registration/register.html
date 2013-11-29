@@ -1,0 +1,112 @@
+{% extends "pos/base.html" %}
+
+{% block title %}Create Account{% endblock %}
+
+{% block content %}
+    <h2>Create Account</h2>
+
+    {# Add any success/error feedback messages #}
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <h2> <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li> </h2>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <form action='{% url 'pos.views.user.register' %}' enctype='multipart/form-data' method="post">
+    {% csrf_token %}
+{#        {{ form.as_p }}   #}
+{#        <input type="submit" value="Create User">   #}
+
+    <div id="data_input_registration">
+        <fieldset>
+            {{ userForm.non_field_errors }}
+            {{ userProfileForm.non_field_errors }}
+            {{ captchaForm.non_field_errors }}
+            {# Create the labels, input fields, and error messages #}
+            <table>
+                <tr>
+                    <div class="fieldWrapper">
+                        <td class="column_left"><label for="id_first_name">{{userForm.first_name.label|title}}:</label></td>
+                        <td> {{ userForm.first_name }} </td>
+                        <td id="errors"> {{ userForm.first_name.errors }} </td>
+                        <td>{{ userForm.honeypot }}</td>
+                        <td id="errors">{{ userForm.honeypot.errors }}</td>
+                    </div>
+                </tr>
+                <tr>
+                    <div class="fieldWrapper">
+                        <td><label for="id_last_name">{{userForm.last_name.label|title}}:</label></td>
+                        <td>{{ userForm.last_name }}</td>
+                        <td id="errors">{{ userForm.last_name.errors }}</td>
+                    </div>
+                </tr>
+                <tr>
+                    <div class="fieldWrapper">
+                        <td><label for="id_username">{{userForm.username.label|title}}:</label></td>
+                        <td>{{ userForm.username }}</td>
+                        <td id="errors">{{ userForm.username.errors }}</td>
+                    </div>
+                </tr>
+                <tr>
+                    <div class="fieldWrapper">
+                        <td><label for="id_password">{{userForm.password.label}}:</label></td>
+                        <td>{{ userForm.password }}</td>
+                        <td id="errors">{{ userForm.password.errors }}</td>
+                    </div>
+                </tr>
+                <tr>
+                    <div class="fieldWrapper">
+                        <td><label for="id_confirm_password">{{userForm.confirm_password.label|title}}:</label></td>
+                        <td>{{ userForm.confirm_password }}</td>
+                        <td id="errors">{{ userForm.confirm_password.errors }}</td>
+                    </div>
+                </tr>
+                <tr>
+                    <div class="fieldWrapper">
+                        <td><label for="id_email">{{userForm.email.label|title}}:</label></td>
+                        <td>{{ userForm.email }}</td>
+                        <td id="errors">{{ userForm.email.errors }}</td>
+                    </div>
+                </tr>
+                <tr>
+                    <div class="fieldWrapper">
+                        <td><label for="id_organisation">{{userProfileForm.organisation.label}}:</label></td>
+                        <td>{{ userProfileForm.organisation }}</td>
+                        <td id="errors">{{ userProfileForm.organisation.errors }}</td>
+                    </div>
+                </tr>
+                <tr>
+                    <div class="fieldWrapper">
+                        <td><label for="id_job">{{userProfileForm.job.label}}:</label></td>
+                        <td>{{ userProfileForm.job }}</td>
+                        <td id="errors">{{ userProfileForm.job.errors }}</td>
+                    </div>
+                </tr>
+                <tr>
+                    <div class="fieldWrapper">
+                        <td><label for="id_intent_to_publish">{{userProfileForm.intent_to_publish.label|title}}:</label></td>
+                        <td>{{ userProfileForm.intent_to_publish }}</td>
+                        <td id="errors">{{ userProfileForm.intent_to_publish.errors }}</td>
+                    </div>
+                </tr>
+                <tr>
+                    <div class="fieldWrapper">
+                        <td><label for="id_captcha">Please enter the text:</label></td>
+                        <td>{{ captchaForm.captcha }}</td>
+                        <td id="errors">{{ captchaForm.captcha.errors }}</td>
+                    </div>
+                </tr>
+            </table>
+            {# Submit Button #}
+            <div id="create_user_submit">
+                <input type="submit" id="submit_button" value="Create User Account">
+            </div>
+        </fieldset>
+    </div>
+
+
+
+    </form>
+{% endblock %}

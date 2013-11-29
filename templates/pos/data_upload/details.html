@@ -1,0 +1,90 @@
+{% extends "pos/base_user_stats.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+    <script type="text/javascript" src="{% static "js/jquery-1.7.2.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/jquery-ui-1.8.23.custom/js/jquery-ui-1.8.23.custom.min.js" %}"></script>
+    <link type="text/css" href="{% static "js/jquery-ui-1.8.23.custom/css/ui-lightness/jquery-ui-1.8.23.custom.css" %}" rel="stylesheet"/>
+    <script type="text/javascript" src="{% static 'js/upload_data.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'js/jquery-jGrowl-1.2.13/jquery.jgrowl.css' %}" type="text/css">
+    <script type="text/javascript" src="{% static 'js/jquery-jGrowl-1.2.13/jquery.jgrowl.min.js' %}"></script>
+    <script type="text/javascript">
+        jQuery(window).load(function() {
+            pos.upload_data.set_click_handlers();
+        });
+    </script>
+{% endblock head %}
+
+    {% block content %}
+    <div id="home_container">
+        <h2>Load a new dataset...</h2>
+
+        {% for err in errors %}
+            <div>{{ err }}</div>
+        {% endfor %}
+
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <h2><li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li></h2>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        <form method='POST' enctype='multipart/form-data' action='{% url 'pos.views.file_upload.load_data' %}'>
+            {% csrf_token %}
+            <table id="data_input">
+                <tr>
+                    <td class="name">POSs Shapefile (.zip):</td>
+                    <td class="inputs"> <input size="35" type="file" name="POSs_Shapefile" class="file"/></td>
+                </tr>
+                <tr>
+                    <td>Facilities CSV (.csv):</td>
+                    <td><input size="35" type="file" name="Facilities_CSV" class="file"/></td>
+                </tr>
+                 <tr>
+                    <td>Catchments Shapefile (.zip):</td>
+                    <td><input size="35" type="file" name="Catchments_Shapefile" class="file"/></td>
+                </tr>
+                <tr>
+                    <td>ABS SA1 Shapefile (.zip):</td>
+                    <td><input size="35" type="file" name="SA1s_Shapefile" class="file"/></td>
+                </tr>
+                <tr>
+                    <td>LGAs Shapefile (.zip):</td>
+                    <td><input size="35" type="file" name="LGAs_Shapefile" class="file"/></td>
+                </tr>
+                <tr>
+                    <td>LGA Population Data CSV (.csv):</td>
+                    <td><input size="35" type="file" name="LGAs_Population_CSV" class="file"/></td>
+                </tr>
+                <tr>
+                    <td>Suburbs Shapefile (.zip):</td>
+                    <td><input size="35" type="file" name="Suburbs_Shapefile" class="file"/></td>
+                </tr>
+                <tr>
+                    <td>Suburb Population Data CSV (.csv):</td>
+                    <td><input size="35" type="file" name="Suburbs_Population_CSV" class="file"/></td>
+                    <td><input id="submit_button" type="submit" value="Upload"></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <img id="progress_display_1" alt="Upload Progress" style="display: none" class="center" width="280" height="20"
+                        src="{% static "js/jquery-ui-1.8.23.custom/css/ui-lightness/ajax_indeterminate_loading_bar.gif" %}">
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td id="upload_text_1" style="display: none">Processing data. This may take a few minutes.</td>
+                </tr>
+            </table>
+        </form>
+        <button class="btn btn-large" id="calculate_lga_stats">Calculate LGA<br>Area / Pop / Catchment Statistics</button>
+        <button class="btn btn-large" id="calculate_suburb_stats">Calculate Suburb<br>Area / Pop / Catchment Statistics</button>
+        <button class="btn btn-large" id="calculate_facility_stats">Calculate LGA &amp; Suburb<br>Facility Statistics</button>
+    </div>
+
+    {% endblock content %}

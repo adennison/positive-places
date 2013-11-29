@@ -1,0 +1,147 @@
+{% extends "pos/base.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+    <!--<script type="text/javascript" src="{% static "js/jquery-1.7.2.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/jquery-ui-1.8.23.custom/js/jquery-ui-1.8.23.custom.min.js" %}"></script>
+    <link type="text/css" rel="stylesheet" href="{% static "js/jquery-ui-1.8.23.custom/css/ui-lightness/jquery-ui-1.8.23.custom.css" %}"/>-->
+    <link href="{% static "css/posFaq.css" %}" rel="stylesheet" type="text/css" media="screen" />
+    <script>
+     	jQuery(function() {
+			jQuery("#tabs").tabs().addClass( "ui-tabs-vertical ui-helper-clearfix");
+			jQuery("#tabs li").removeClass( "ui-corner-top" ).addClass( "ui-corner-left");
+			jQuery("#tabs").tabs({
+				select: function(event, ui) {
+        			window.location.hash = ui.tab.hash;
+        		}
+			});
+		});
+	</script>
+{% endblock head %}
+
+{% block content %}
+	<div id = "home_container">
+		<div id = "tabs">
+			<ul >
+				<li><a href="#tabs-1">Area Covered</a></li>
+				<li><a href="#tabs-2">POS Framework</a></li>
+				<li><a href="#tabs-3">Park Classification</a></li>
+				<li><a href="#tabs-4">Database Creation</a></li>
+				<li><a href="#tabs-5">Summary Report</a></li>
+				<li><a href="#tabs-6">Sports Facilities</a></li>
+			</ul>
+
+			<div id ="tabs-1" style="height: 550px;">
+				<a href="{% static "images/perth_metro_large.jpg" %}"><img
+										id="perthmetro"
+										alt="Perth Metro Map"
+										style="float:right;"
+										src="{% static "images/perth_metro.png" %}"
+				></a>
+				<h2>What areas does POS Tool provide data for?</h2>
+
+				<p>POS Tool provides you with access to our extensive POS database.  All areas of public open space within 32 LGA’s (excluding Waroona) across Perth and Peel have been mapped and can be accessed through POS Tool.</p>
+
+				<p>Users can search and analyse the POS database by suburb or local government authority (LGA). </p>
+			</div>
+
+			<div id="tabs-2" style="height: 550px; overflow-y:auto">
+				<h2>What do we mean by public open space (POS)?</h2>
+
+				<p>POS Tool defines public open space (POS) as <b class="green">all land reserved for the provision of green space and natural environments (e.g. parks, reserves, bushland) that is freely accessible and intended for use for recreation purposes (active or passive) by the general public.</b></p>
+
+				<p>Areas where the general public are not permitted except on payment or where access is limited (e.g. by membership, golf courses and sports centre facilities) were not included as areas of public open space. In addition, all spaces within the road cadastre were excluded. These included setbacks and buffers required by legislation.</p>
+
+				<p>POS Tool has classified all areas of POS into four categories.  This classification system and definitions are shown below. For more information on the definition and examples of the four categories in the POS Classification Framework please click on the following links:</p>
+
+				<table style="text-align:center;">
+					<colgroup>
+						<col span="1" style="width: 25%;">
+						<col span="1" style="width: 25%;">
+						<col span="1" style="width: 25%;">
+						<col span="1" style="width: 25%;">
+					</colgroup>
+					<tr>
+						<td><a href="/cbeh/pos/faq/faq_framework_parks/">Parks</a></td>
+						<td><a href="/cbeh/pos/faq/faq_framework_natural/">Natural</a></td>
+						<td><a href="/cbeh/pos/faq/faq_framework_school/">School Grounds</a></td>
+						<td><a href="/cbeh/pos/faq/faq_framework_residual/">Residual</a></td>
+					</tr>
+				</table>
+
+				<a href="{% static "images/POSframework_large.png" %}"><img
+					id="classsystem"
+					alt="Park Classification System"
+					src="{% static "images/POSframework.png" %}"
+				></a>
+			</div>
+			<div id ="tabs-3" style="height: 550px; overflow-y:auto">
+				<h2>How are parks classified in POS Tool?</h2>
+
+				<p>POS Tool has developed a park classification system based on the size (i.e. area) of each park.  After careful consideration of other available park size classifications, we opted to present POS Tool data using our own new set of eight categories. Importantly, the POS Tool classification allows users to cross reference between two useful but different classification systems currently available in the WA, these are the Liveable Neighbourhoods Guidelines (LNG) and the WA State Parkland Strategy documents. These are both described below:</p>
+
+				<ul>
+					<li>The WA Department of Planning’s Liveable Neighbourhoods Guidelines (LNG) parks are classified by size and catchment area. LNG is the operational policy to be followed in the design and approval of structure planning and subdivision for greenfield sites and for the redevelopment of large brownfield and urban infill sites in WA. Although widely known and used, there are notable gaps in the LNG classification of categories.</li>
+					<li>The WA Department of Sport and Recreation (DSR) led the development of a new framework and terminology (WA Parkland Strategy) that can be universally used (across-industry) to define and describe areas of public open space by size and catchment. DSR’s size classifications of POS differ from those stipulated in LNG and do not easily align. Launched in early 2013 this classification system is not yet widely adopted.</li>
+				</ul>
+
+				<p>POS Tool has created eight different categories of park size and catchment areas which were strongly informed by LNG. POS Tool’s categories can be aggregated to provide data against the classification system outlined in the DSR Parkland strategy.  These are illustrated in the ‘Park Classifications System used in POS Tool’ diagram below.</p>
+
+				<a href="{% static "images/size_classification.jpg" %}"><img
+					id="parkclass"
+					width="100%"
+					alt="Park Classification Table"
+					src="{% static "images/size_classification.jpg" %}"
+				></a>
+
+				<p style="text-align:center;"><b>Park Classifications System used in POS Tool</b></p>
+
+				<p>Footnote: DSR=Department of Sport and Recreation; POS Tool developed  by the Centre for the Built Environment and Health (CBEH), UWA; LN= Liveable Neighbourhoods Guidelines, Department of Planning, (DoP)</p>
+
+				<p>References:  Western Australian Planning Commission, Department for Planning and Infrastructure [now Department of Planning]) (2007).Liveable Neighbourhoods a Western Australian Government sustainable cities initiative.</p>
+
+				<p>Department of Sport and Recreation WA; (2012).Classification Framework for public open space (<a class="underline" href="http://www.dsr.wa.gov.au/classification-framework-for-public-open-space">http://www.dsr.wa.gov.au/classification-framework-for-public-open-space</a>)</p>
+			</div>
+			<div id ="tabs-4" style="height: 550px; overflow-y:auto">
+				<h2>How was the POS Database Created?</h2>
+
+				<p>The Public Open Space dataset for the Perth and Peel metropolitan region was compiled in five steps. More information on each of the steps is described in the relevant sections below.</p>
+
+				<a href="{% static "images/Steps_large.png" %}"><img
+					id="classsystem"
+					style="margin:0px auto; display:block;"
+					alt="Park Classification System"
+					src="{% static "images/Steps.png" %}"></a>
+
+				<p><b>Summary of POS Tool Data Collection and Classification Protocols</b></p>
+
+				<ol>
+					<li><a href="/cbeh/pos/faq/faq_database_developing/">Development of a POS Base Layer</a></li>
+					<li><a href="/cbeh/pos/faq/faq_database_verification/">Verification and Quality Control</a></li>
+					<li><a href="/cbeh/pos/faq/faq_database_audit/">Park Audit</a></span></li>
+					<li><a href="/cbeh/pos/faq/faq_database_compilation/">Compilation of a Final POS Layer</a></li>
+					<li><a href="/cbeh/pos/faq/faq_database_computing/">Computing Population Catchments</a></li>
+				</ol>
+			</div>
+			<div id ="tabs-5" style="height: 550px; overflow-y:auto">
+				<h2>How do I interpret the summary reports?</h2>
+				<p>The POS Tool provides four different summary reports. Output from POS Tool is summarised by LGA and/or by Suburb. This section is designed to help you understand and use the summary reports provided.<p>
+				<ul id="disc_list">
+					<li><a href="/cbeh/pos/faq/faq_summary_general/">POS General Summary (providing a count [frequency] and area)</a></li>
+					<li><a href="/cbeh/pos/faq/faq_summary_facility/">Facility Summary (providing a count of the facilities present by park type</a></li>
+					<li><a href="/cbeh/pos/faq/faq_summary_catchment/">Park Catchment Population (providing estimate of percent of population served)</a></li>
+					<li><a href="/cbeh/pos/faq/faq_summary_quality/">Park Quality (a measure of utility and attractiveness)</a></li>
+				</ul>
+			</div>
+			<div id ="tabs-6" style="height: 550px;">
+				<h2>Does the POS Tool include all sporting facilities across Perth?</h2>
+
+				<p>No. Only those sporting facilities that were identified as a sports club or a pay facility AND found adjacent to POS were included in the POS Tool. Therefore  the POS Tool does not provide a comprehensive dataset on sports and recreation facilities. Future work at CBEH may lead to this so contact the POS Tool team at CBEH if you are interested in this information: <a class="underline" href="mailto:postool-sph@uwa.edu.au?Subject=POS%20Tool%20Query" target="_top">postool-sph@uwa.edu.au</a></p>
+
+				<p><b>The POS tool does provide data on the provision of sporting facilities located WITHIN parks</b>. Information on the provision of sporting facilities can be found by accessing the attributes of a specific park (either via Park Name search or Address Search). Additionally, summarized information on sporting facilities can be found from the statistics summary output for a summary area (i.e. LGA). The ‘Facility Summary’ report provides a summary of number of facilities within different categories of parks. POS tool also provides data on whether paid sporting facilities were located adjacent to identified parks. This information can be found in the Facility Summary report of the summary data statistics file as well as in the attributes of a specific park.  For more information please contact us at: <a class="underline" href="mailto:postool-sph@uwa.edu.au?Subject=POS%20Tool%20Query" target="_top">postool-sph@uwa.edu.au</a></p>
+			</div>
+		</div>
+	</div>
+
+{% endblock content %}

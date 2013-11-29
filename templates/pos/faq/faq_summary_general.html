@@ -1,0 +1,46 @@
+{% extends "pos/base.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+    <script type="text/javascript" src="{% static "js/jquery-1.7.2.min.js" %}"></script>
+	<link type="text/css" rel="stylesheet" href="{% static "js/jquery-ui-1.8.23.custom/css/ui-lightness/jquery-ui-1.8.23.custom.css" %}"/>
+    <script type="text/javascript" src="{% static "js/jquery-ui-1.8.23.custom/js/jquery-ui-1.8.23.custom.min.js" %}"></script>
+    <link href="{% static "css/posFaq.css" %}" rel="stylesheet" type="text/css" media="screen" />
+{% endblock head %}
+
+{% block content %}
+	<div id = "home_container" style="height: 550px; overflow-y: scroll;">
+		<a href="/cbeh/pos/faq/#tabs-5">Back to Summary Report</a>
+		<h2>POS General Summary Reports</h2>
+		<p>The POS general summary report below is an example of a downloaded Summary Report from one LGA.</p> 
+		
+		<h2>Definitions</h2>
+		<p><b>Count</b>: Provides a count of the different types of POS (polygons) present within the summarised area; Parks are summarised in more detail: counts of different parks are provided by the <a class="underline" href="/cbeh/pos/faq/#tabs-3">park size classification</a></p> 
+		
+		<p><em>Note: Where a park area crossed an LGA or suburb boundary, the original Park Size Classification assigned to the park area (based on the size of its intact boundary) was retained for the respective (split) parts located within and assigned to the respective LGAs/suburbs (for more information see the <a class="underline" href="/cbeh/pos/faq/#tabs-4">database creation </a>section).</em></p> 
+
+		<p>For reasons outlined in the <a class="underline" href="/cbeh/pos/faq/#tabs-4">database creation</a> section the user cannot sum summary data on counts from all LGAs (or suburbs) to identify the total number of parks in a region. This is due to how polygons were handled at LGA (or suburb) boundaries. For parks crossing a boundary (LGA or suburb), park areas were counted 1x in each administrative area it crosses. However, the size classification of the original park is maintained, but the area assigned to each administrative area is split.</p>
+
+		<p><b class="green">Area</b>: Indicates the total area of each POS type within the selected administrative unit. Park areas are further summarised by <a class="underline" href="/cbeh/pos/faq/#tabs-3">park size classification</a></p> 
+		
+		<p><em>Note: Where park polygons crossed LGA or Suburb boundary lines, only the actual area of the park polygon within the different LGA’s/suburbs was allocated to the respective LGA or Suburb (for more information see the <a class="underline" href="/cbeh/pos/faq/#tabs-4">database creation </a>section).</em></p> 
+
+		<p><b class="green">% Park Area</b>: the percentage of the total Park area by each Park classification / type (e.g. Pocket Park, Small Neighbourhood Park, etc.)</p>
+
+		<p><b class="green">% Area Total POS*</b>: The area of each POS type as a percentage of the total area of POS.  This is calculated based on the combination of Parks, Natural, and Residual green spaces as the total POS area (i.e., school grounds are not included).</p>
+
+		<p><b class="green">% Area LGA</b>: The area of all POS types as a percentage of the area of the summarised administrative unit.  Two total % area LGA / Suburb figures are provided; one that includes school grounds and one that excludes school grounds.</p>
+	  
+		<a href="{% static "images/Table_1_large.png" %}"><img
+			id="classsystem"
+			alt="Park Classification System"
+			src="{% static "images/Table_1.png" %}"
+		></a>
+
+		
+		<p>Footnotes:</p>
+		<p>* POS is the public open space including categories of Parks, Natural and Residual Green Space</p>
+		<p>+ Access to School Grounds unknown/unverified</p>
+	</div>
+{% endblock content %}

@@ -1,0 +1,247 @@
+{% extends "pos/base.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+    <script type="text/javascript" src="{% static "js/jquery-1.7.2.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/jquery-ui-1.8.23.custom/js/jquery-ui-1.8.23.custom.min.js" %}"></script>
+    <link type="text/css" href="{% static "js/jquery-ui-1.8.23.custom/css/ui-lightness/jquery-ui-1.8.23.custom.css" %}" rel="stylesheet"/>
+    <script src="https://maps.googleapis.com/maps/api/js?sensor=false&libraries=places"></script>
+    <script>
+        $(document).ready(function() {
+            var default_message_for_dialog = 'The data available in POS Tool were created by the Centre for the Built Environment and Health to provide a standardised and comparable dataset on POS across the Perth and Peel suburb and LGA boundaries. All areas of POS were identified using a clear set of definitions of POS and a consistent classification system. For more information on the definitions of POS classification system and the currency (date) of the data please visit the “FAQ” and under “Data Currency” sections of the website under the “About” tab.<br><br>Please note that POS Tool data may not align exactly with any other POS data sources, including data held by individual LGAs due to differences in classification and park audit methods. POS Tool data compliments other datasets held by individual LGA’s and, most importantly, provides the unique benefit of open access to a comprehensive dataset which is consistent and uniform across all Metropolitan LGA’s. POS tool data was not developed from LGA data sources. For full details on the base data sources, please visit the “About” section under “FAQ”.<br><br>Use of the POS Tool data shall be solely at the users own discretion and risk. No other party shall be liable for any damages whatsoever and howsoever caused, including where resulting from any inaccuracy, incorrectness, unsoundness and/or unreliability in its use. The tool and data are provided without any representation or warranty of any kind, either express or implied, including but not limited to being of satisfactory quality or fitness for a particular purpose.';
+            var disclaimer_dialog = jQuery("#dialog_1");
+
+            disclaimer_dialog.dialog({
+                modal: true,
+                resizable: false,
+                bgiframe: true,
+                // height: 275,
+                // width: 650,
+                height: 475,
+                width: 800,
+                autoOpen: false,
+                title: 'Disclaimer'
+            });
+
+
+            $('input.confirm').click(function(theINPUT){
+                theINPUT.preventDefault();
+                var theFORM = $(theINPUT.target).closest("form");
+                var theREL = $(this).attr("rel");
+                var theMESSAGE = (theREL == undefined || theREL == '') ? default_message_for_dialog : theREL;
+
+                disclaimer_dialog.html('<p><b class="green">Disclaimer</b></p><p>' + theMESSAGE + '</p>');
+                disclaimer_dialog.dialog('option', 'buttons', {
+                    "Confirm" : function() {
+                        theFORM.submit();
+                        },
+                    "Cancel" : function() {
+                        disclaimer_dialog.dialog("close");
+                        }
+                });
+                disclaimer_dialog.dialog("open");
+            });
+        });
+    </script>
+    <style>
+        .ui-dialog .ui-dialog-buttonpane {text-align: center;}
+        .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset {float: none;}
+    </style>
+{% endblock head %}
+
+{% block content %}
+    <div id="dialog_1">
+    </div>
+
+    <!-- Search Area Container -->
+    <div id = "home_container">
+    <h2>Search the database</h2>
+    <!-- Text details -->
+        <div id = "content_text">
+            <p class="green">POS Tool provides information on where Parks and Public Open Spaces (POS) are located throughout the Perth region and provides information on the facilities each park provides. Data were collected in 2011/2012.</p>
+            <p><b>Searching for parks and POS is easy. The box below allows you to search for POS in three ways:</p>
+                <ol>
+                    <li>Search for parks based on an address - simply type in your home address and find parks near you;</li>
+                    <li>Search for parks by name - type in a park name to find the amenities and facilities provided in that park;</li>
+                    <li>Search for information on the distribution of POS and park amenities within a suburb or Local Government Area - just type in the name of the suburb or LGA. </li>
+                </ol>
+            <p>You will instantly be directed to an interactive map with your search results and accompanying information.</b></p>
+        </div>
+
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <h2> <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li> </h2>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        <!-- Search details -->
+        <div id = "suburb_list">
+            <form name="address_name" action="{% url 'pos.views.search.search' %}" method="GET">
+            <fieldset>
+            <legend>Address Search</legend>
+                <input type="text" id="searchTextField" name="geocodeLocation" onkeypress="return disableEnterKey(event, 'geocode_submit_button')" style="width:500px;height:15px; font-size:15px;"/>
+                <input type="hidden" id="latitude" name="latitude">
+                <input type="hidden" id="longitude" name="longitude">
+                <input type="submit" value="search" id="geocode_submit_button" disabled="disabled" class="confirm" />
+            </fieldset>
+            </form>
+            <br/>
+            <script type="text/javascript">
+                // Prevent form being submitted if user presses 'Enter' key in a text box
+                function disableEnterKey(e, buttonID) {
+                        var key; // Variable to hold the number of the key that was pressed
+                        //if the browser is Internet Explorer
+                        if(window.event){
+                            key = window.event.keyCode; // Store the key code (Key number) of the pressed key
+                        } else {
+                            key = e.which;
+                        }
+                        // If key 13 is pressed (the 'Enter' key) and search button is disabled
+                        if ((key == 13) && (document.getElementById(buttonID).disabled == true)) {
+                            return false; // Do nothing
+                        } else {
+                        return true; // Continue as normal (allow the key press)
+                        }
+                }
+
+                // Empty all text boxes and disable all Submit buttons - for when when user has hit 'Back' button
+                jQuery(function() {
+                        if(jQuery("#geocode_submit_button").is(":enabled")) {
+                                jQuery("#latitude").val('');
+                                jQuery("#longitude").val('');
+                                jQuery("#geocode_submit_button").prop("disabled", true);
+                        }
+                        if(jQuery("#park_submit_button").is(":enabled")) {
+                                jQuery("#park_labels").val('');
+                                jQuery("#park_values").val('');
+                                jQuery("#park_submit_button").prop("disabled", true);
+                        }
+                        if(jQuery("#region_submit_button").is(":enabled")) {
+                                jQuery("#region_labels").val('');
+                                jQuery("#region_values").val('');
+                                jQuery("#region_submit_button").prop("disabled", true);
+                        }
+                });
+
+                // Autocomplete using Google Geocoder
+                function initialise() {
+                var input = document.getElementById('searchTextField');
+                var autocomplete;
+
+                var perthDefaultBounds = new google.maps.LatLngBounds(
+                    new google.maps.LatLng(-33.5, 115.5),
+                    new google.maps.LatLng(-31.3, 117.0));
+
+
+                var options = {
+                    componentRestrictions: {country: 'au'},
+                    bounds: perthDefaultBounds
+                };
+                autocomplete = new google.maps.places.Autocomplete(input, options);
+
+                google.maps.event.addListener(autocomplete, 'place_changed', function() {
+                    var place = autocomplete.getPlace();
+                    var location = place.geometry.location;
+                    latTextbox = document.getElementById("latitude");
+                    longTextbox = document.getElementById("longitude");
+                    latTextbox.value = location.lat();
+                    longTextbox.value = location.lng();
+                    document.getElementById('geocode_submit_button').disabled = false; // enable search button after successful geocode
+                    //console.log("Longitude: " + location.lng());
+                    //console.log("Latitude: " + location.lat());
+        });
+                }
+            google.maps.event.addDomListener(window, 'load', initialise);
+            </script>
+
+        <!-- Define some default styles to the autocomplete dropdowns-->
+        <style>
+        .ui-autocomplete {
+            max-height: 200px;
+            width: 175px;
+            overflow-y: auto;
+            /* prevent horizontal scrollbar */
+            overflow-x: hidden;
+            /* add padding to account for vertical scrollbar */
+            padding-right: 20px;
+        }
+        /* IE 6 doesn't support max-height
+         * use height instead, but this forces the menu to always be this tall
+         */
+        * html .ui-autocomplete {
+            height: 200px;
+        }
+        </style>
+
+        <!-- Parks Autocomplete Text Box Search -->
+        <form name="park_name" method="POST" action="{% url 'pos.views.search.search' %}">
+        {% csrf_token %}
+            <fieldset>
+            <legend>Park Name</legend>
+                <div class="park_search_ui_widget">
+                    <input id="park_labels" placeholder="Enter a park name" type="text" name="park_name" onkeypress="return disableEnterKey(event, 'park_submit_button')" style="width:500px;height:15px; font-size:15px;" />
+                    <input type="hidden" id="park_values" name="park_pk"/>
+                    <input type="submit" id="park_submit_button" disabled="disabled" value="search" class="confirm" />
+                </div>
+            </fieldset>
+        </form>
+        <br/>
+        <script>
+        jQuery(function() {
+            jQuery("#park_labels").autocomplete({
+                source: "{% url 'pos.views.search.search' %}?look=park_autocomplete",
+                minLength: 3,
+                delay: 400,
+                autoFocus: false,
+                focus: function(event, ui) {
+                    $("#park_labels").val(ui.item.label);
+                    return false;
+                },
+                select: function(event, ui) {
+                    $("#park_labels").val(ui.item.label);
+                    $("#park_values").val(ui.item.value);
+                    document.getElementById('park_submit_button').disabled = false; // enable search button after successful user selection
+                    return false;
+                }
+            });
+        });
+        </script>
+
+        <!-- Suburbs / LGAs Autocomplete Text Box Search -->
+        <form name="region_name" method="POST" action="{% url 'pos.views.search.search' %}">
+        {% csrf_token %}
+            <fieldset>
+            <legend>Suburb or Local Government Area</legend>
+                <div class="region_search_ui_widget">
+                    <input id="region_labels" placeholder="Enter a suburb or local government" type="text" name="region_name" onkeypress="return disableEnterKey(event, 'region_submit_button')" style="width:500px;height:15px; font-size:15px;" />
+                    <input type="hidden" id="region_values" name="region_pk"/>
+                    <input type="submit" id="region_submit_button" disabled="disabled" value="search" class="confirm" />
+                </div>
+            </fieldset>
+        </form>
+        <script>
+        jQuery(function() {
+            jQuery("#region_labels").autocomplete({
+                source: "{% url 'pos.views.search.search' %}?look=region_autocomplete",
+                minLength: 3,
+                delay: 400,
+                autoFocus: false,
+                focus: function(event, ui) {
+                    $("#region_labels").val(ui.item.label);
+                    return false;
+                },
+                select: function(event, ui) {
+                    $("#region_labels").val(ui.item.label);
+                    $("#region_values").val(ui.item.value);
+                    document.getElementById('region_submit_button').disabled = false; // enable search button after successful user selection
+                    return false;
+                }
+            });
+        });
+        </script>
+        </div>
+    </div>
+{% endblock content %}

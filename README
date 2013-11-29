@@ -1,0 +1,62 @@
+The following document is aimed at Software Developers who wish to set up a
+development environment to work on the UWA Center for the Built Environment
+Public Open Spaces Amenities project. The setup procedure described in this
+document has been tested on Ubuntu 12.04 but will most likely work in most
+variants and versions of Ubuntu.
+
+To begin, checkout the project from subversion
+svn checkout http://positive-places.googlecode.com/svn/trunk/ positive-places-read-only
+Since you are reading this document, you have probably already completed this step.
+
+Create a new bash script in the "bin/env" directory of the checkout. The script
+should be name "environment_<hostname>.sh" where hostname is the name of your 
+machine. You can find out the name of your machine by running
+$ echo $HOSTNAME
+It is recommended that you simply copy one of the existing environment scripts
+and rename it as appropriate.
+
+Edit the environment script and modify the first line that begins with
+"export WORKSPACE_HOME". Your workspace home should be the absolute path to 
+your subversion checkout.
+
+Setting up the project will require some software to be installed on your
+computer. Scripts have been created to automate most of this for you and they
+can be found in "bin/setup_scripts". The setup is divided into two phases. 
+
+The first phase, is contained in the script "bin/setup_scripts/setup_ubuntu.sh".
+This script will install the following packages:
+python-dev 
+python-pip 
+binutils 
+gdal-bin 
+libproj-dev 
+postgresql-9.1-postgis 
+postgresql-server-dev-9.1
+
+The script will also setup a postgis template database called "template_postgis".
+If you already have postgres/postgis set up on your computer, it is recommended
+that you modify this script so that you do not install multiple versions of
+postgres onto your computer.
+
+The project has been configured to expect a postgres password of "postgres". You
+may choose any password you like however if you do, you will also need to make
+the corresponding adjustment in your django settings file.
+
+To install the Python virtual environment, run the script 
+"bin/setup_scripts/setup_dev.sh". This will download the following packages
+to your virtual environment.
+psycopg2 
+coverage 
+docutils 
+django
+
+If you are running the project for the first time, you will need to create a
+spatial database for your data. Run the script "bin/syncdb.sh". This script 
+will drop your existing database, create a new database and create the necessary
+tables, sequences and indexes.
+
+If you already have a database and simply want to delete all data without
+re-creating tables, you can use "bin/flush.sh".
+
+To run the development webserver, use the script "bin/runserver.sh".
+To run the django shell, use the script "bin/shell.sh".

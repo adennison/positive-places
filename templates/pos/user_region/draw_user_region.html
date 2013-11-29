@@ -1,0 +1,107 @@
+{% extends "pos/base.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+    <script type="text/javascript" src="{% static "js/OpenLayers-2.12/OpenLayers.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/jquery-1.7.2.min.js" %}"></script>
+    <link type="text/css" rel="stylesheet" href="{% static "js/jquery-ui-1.8.23.custom/css/ui-lightness/jquery-ui-1.8.23.custom.css" %}"/>
+    <script type="text/javascript" src="{% static "js/jquery-ui-1.8.23.custom/js/jquery-ui-1.8.23.custom.min.js" %}"></script>
+    <script src="http://maps.googleapis.com/maps/api/js?sensor=false&v=3.7"></script>
+    <link rel="stylesheet" href="{% static 'js/jquery-jGrowl-1.2.13/jquery.jgrowl.css' %}" type="text/css">
+    <script type="text/javascript" src="{% static 'js/jquery-jGrowl-1.2.13/jquery.jgrowl.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/bootstrap-2.3.2/js/bootstrap.min.js' %}"></script>
+
+    <script type="text/javascript">
+    jQuery(document).ready(function() {
+        if(jQuery("#refreshed").val() === "yes") {
+            jQuery("#refreshed").val('no');
+            location.reload();
+        }
+    });
+    </script>
+    <input id="refreshed" type="hidden" value="no"  style="display: none;">
+{% endblock head %}
+
+{% block content %}
+
+    <div id="project_name">
+        <div class="row-fluid">
+            <div class="span6">
+                <h2>Create / Edit region for project: {{ project.project_name }}</h2>
+            </div>
+            <div class="span6">
+                <h2>
+                    <a href="{% url 'load_region' project.region.pk %}" class="btn btn-primary normal-weight" id="view_stats_button">View Stats</a>
+                    <a href="{% url 'scenario_modelling' project.pk %}" class="btn btn-primary normal-weight" id="scenario_calculator_button">Scenario Calculator</a>
+                    <a href="{% url 'manage_projects' %}" class="btn btn-primary normal-weight" id="manage_projects_button">Manage Projects</a>
+                </h2>
+            </div>
+        </div>
+    </div>
+
+    {% for err in errors %}
+        <div>{{ err }}</div>
+    {% endfor %}
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <script>pos.show_growl("{{ message }}")</script>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <!-- Map Container -->
+    <div id = "map_container">
+        <div id="map"></div>
+            <script type="text/javascript">
+                jQuery(window).load(function() {
+                    pos.map.geoserverURL = '{{ geoserver_url }}';
+                    pos.map.create_draw_user_region_map(
+                        'map',
+                        '{{ userRegionWkt }}',
+                        '{{ userRegionPk }}'
+                    );
+                });
+            </script>
+    </div>
+
+    <table>
+        <tr>
+            <td><input id="edit_button" type="button" value="Create/Edit Region"></input></td>
+            <td><input id="save_button" type="button" value="Save" style="display: none;"></input></td>
+        </tr>
+        <tr>
+            <td><input name="pk" type="hidden" value="{{ userRegionPk }}" style="display: none;"></td>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <td>
+                <img id="progress_display" alt="Upload Progress" style="display: none;" class="center" width="280" height="20"
+                src="{% static "js/jquery-ui-1.8.23.custom/css/ui-lightness/ajax_indeterminate_loading_bar.gif" %}">
+            </td>
+        </tr>
+        <tr>
+            <td id="upload_text" style="display: none;">Uploading your region and calculating area/population statistics.<br>This may take a few moments.</td>
+        </tr>
+    </table>
+
+    <p id="draw_instructions" class ="green">
+        Instructions for drawing your own polygon of interest:
+    </p>
+    <ol id="draw_instructions" class="green">
+        <li>Zoom to area of interest on the map <img src='{% static "images/zoom_in_out.png" %}' alt="(Zoom In/Out Button)" width=12 height=24></li>
+        <li>Click Create/Edit Region</li>
+        <li>Click the <img src='{% static "js/OpenLayers-2.12/theme/default/img/draw_polygon_inactive.png" %}' alt="Draw Region" width=24 height=24> button to activate the drawing tool</li>
+        <li>Draw a polygon around your area of interest - click the left mouse button to the boundaries of your area of interest. (The total area must not exceed {{ max_hectares }} hectares). Double click outside of the polygon (area) to finish.</li>
+        <li>If you make a mistake or are not happy with your polygon:</li>
+            <ol>
+                <li style="list-style-type:lower-alpha;">Click the Cancel button - this will clear the display for you to start again; or</li>
+                <li style="list-style-type:lower-alpha;">Finish the polygon if you are still drawing it. Click the <img src='{% static "js/OpenLayers-2.12/theme/default/img/modify_feature_inactive.png" %}' alt="Modify Region" width=24 height=24> button to activate the editing tool. Then click on the polygon (it will turn red) to edit the shape. Click outside the polygon (area) to finish.</li>
+            </ol>
+        <li>When you are happy with your polygon hit the Save button</li>
+    </ol>
+
+{% endblock content %}

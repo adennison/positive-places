@@ -1,0 +1,961 @@
+{% extends "pos/base.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+    <script type="text/javascript" src="{% static "js/OpenLayers-2.12/OpenLayers.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/jquery-1.7.2.min.js" %}"></script>
+    <link type="text/css" rel="stylesheet" href="{% static "js/jquery-ui-1.8.23.custom/css/ui-lightness/jquery-ui-1.8.23.custom.css" %}"/>
+    <script type="text/javascript" src="{% static "js/jquery-ui-1.8.23.custom/js/jquery-ui-1.8.23.custom.min.js" %}"></script>
+    <script src="http://maps.googleapis.com/maps/api/js?sensor=false&v=3.7"></script>
+    <script type="text/javascript" src="{% static 'js/bootstrap-2.3.2/js/bootstrap.min.js' %}"></script>
+{% endblock head %}
+
+{% block content %}
+
+    <!-- Map Container -->
+    <div id = "map_container">
+        <div id="map" ></div>
+            <script type="text/javascript">
+                jQuery(window).load(function() {
+                    pos.map.geoserverURL = '{{geoserver_url}}';
+                    pos.map.create_regions_map(
+                       'map',
+                       '{{ region.get_mpoly_wgs.wkt }}',
+                       '{{ region.name }}',
+                       '{{ region.type }}'
+                       );
+                });
+            </script>
+		<div id="legend_img">
+            <a title="POS Legend">
+            <img id="legend" alt="POS Legend" src="{% static "images/legend_sml.PNG" %}">
+            </a>
+        </div>
+        <div>
+            <p><a class="reportProblem" href="mailto:postool-sph@uwa.edu.au?Subject=POS%20Tool" alt="Email us" title="Email us">Report a problem</a></p>
+        </div>
+    </div>
+
+    <!-- Table Container -->
+    <div id = "table_container">
+        {% if region.type == 'USER' or region.type == 'SP' %}
+            <div class="row-fluid" align="right">
+                <a href="{% url 'manage_projects' %}" class="btn btn-primary normal-weight" id="manage_projects_button">Manage Projects</a>
+            </div>
+        {% endif %}
+
+        <p><strong>{{ region.name }} Statistics</strong><p>
+        <table id = "general">
+            <tbody>
+                <tr>
+                    <th title = "The area of this region (in hectares)">Area &#40;Ha&#41;</th>
+                    <td> {{region.get_area_ha_integer}} </td>
+                </tr>
+                {% if region.type == 'USER' or region.type == 'SP' %}
+                    <tr>
+                        <th title="The project name">Project Name</th>
+                        <td>{{ region.project.project_name }}</td>
+                    </tr>
+                {% else %}
+                <tr>
+                    <th title = "The type of region">Type</th>
+                    <td>{{region.get_type_display}}</td>
+                </tr>
+                {% endif %}
+
+                {% if region.type == 'SUB'%} <!-- Only show the LGA value if region is a suburb -->
+                    <tr>
+                        <th title = "The Local Government Area this region is located in">LGA</th>
+                        <td>
+                            {% for oneRegion in region.get_lga %}
+                                {% if oneRegion.pk %}
+                                <a href="{% url 'pos.views.region.details' pk=oneRegion.pk %}" title="{{ oneRegion.name }}">{{oneRegion.short_name|title}}</a>{% if not forloop.last %}, {% endif %}
+                                {% else %}
+                                    {{ oneRegion|title }}
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                    </tr>
+                {% endif %}
+                <tr>
+                    <th title="The city this region is located in">City</th>
+                    <td>Perth</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p><strong>Park Statistics</strong>
+        <div class="row-fluid">
+            <div class="span6">
+                    <form name="stat_download" method="POST" action="{% url 'pos.views.region.download_file' %}">
+                    {% csrf_token %}
+                        <input
+                            style="text-decoration: underline;
+                                    display: inline-block;
+                                    border: 0px;
+                                    background-color: #FFFFFF;
+                                    cursor: hand;
+                                    cursor: pointer;
+                                    color: #77933C;"
+                               type="submit"
+                               id="region_download_button"
+                               value="Download statistics file for {{region.name|title}}">
+                        <input type="hidden" id="region_pk" name="region_pk" value="{{region.pk}}"/>
+                    </form>
+                <p>
+                </div>
+            {% if region.type == 'USER' or region.type == 'SP' %}
+                <div class="span6" align="right">
+                    <a href="{% url 'scenario_modelling' region.project.pk %}" class="btn btn-primary normal-weight" id="scenario_calculator_button">Scenario Calculator</a>
+                </div>
+            {% endif %}
+        </div>
+
+
+        <script>
+            jQuery(function() {
+                jQuery( "#tabs" ).tabs();
+            });
+        </script>
+
+        <div id="tabs">
+            <ul>
+                <li><a href="#tabs-1">Count</a></li>
+                <li><a href="#tabs-2">% Area</a></li>
+                <li><a href="#tabs-3">POS Catchment</a></li>
+                <li><a href="#tabs-4">DSR Catchment</a></li>
+            </ul>
+            {% with regionInfo=region.get_park_stats %}
+
+            <div id="tabs-1">
+                <table id="general" style="table-layout:fixed; margin:0px;">
+                    <thead>
+                        <tr>
+                            <th style="width:180px;">Class</th>
+                            <th style="width:40px;">Count</th>
+                            <th>Area &#40;Ha&#41;</th>
+                        </tr>
+                    </thead>
+                    <tr>
+                        <td style="color:#77933C; font-weight:bold;" title='All Parks'>Parks</td>
+                        <td>
+                            {% if regionInfo.frequency_1 or regionInfo.frequency_1 = 0 %}
+                                {{regionInfo.frequency_1}}
+                            {% else %}
+                                {{ '-' }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if regionInfo.sum_area_ha_1 or regionInfo.sum_area_ha_1 = 0 %}
+                                {{regionInfo.sum_area_ha_1}}
+                            {% else %}
+                                {{ '-' }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-indent:8px;" title='0 - 0.3 ha'>Pocket Park</td>
+                        <td>
+                            {% if regionInfo.frequency_6 or regionInfo.frequency_6 = 0 %}
+                                {{regionInfo.frequency_6}}
+                            {% else %}
+                                {{ '-' }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if regionInfo.sum_area_ha_6 or regionInfo.sum_area_ha_6 = 0 %}
+                                {{regionInfo.sum_area_ha_6}}
+                            {% else %}
+                                {{ '-' }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-indent:8px;" title='0.3 - 1 ha'>Small Neighbourhood Park</td>
+                        <td>
+                            {% if regionInfo.frequency_7 or regionInfo.frequency_7 = 0 %}
+                                {{regionInfo.frequency_7}}
+                            {% else %}
+                                {{ '-' }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if regionInfo.sum_area_ha_7 or regionInfo.sum_area_ha_7 = 0 %}
+                                {{regionInfo.sum_area_ha_7}}
+                            {% else %}
+                                {{ '-' }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-indent:8px;" title='1 - 2 ha'>Medium Neighbourhood Park</td>
+                        <td>
+                            {% if regionInfo.frequency_8 or regionInfo.frequency_8 = 0 %}
+                                {{regionInfo.frequency_8}}
+                            {% else %}
+                                {{ '-' }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if regionInfo.sum_area_ha_8 or regionInfo.sum_area_ha_8 = 0 %}
+                                {{regionInfo.sum_area_ha_8}}
+                            {% else %}
+                                {{ '-' }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-indent:8px;" title='2 - 4 ha'>Large Neighbourhood Park 1</td>
+                        <td>
+                            {% if regionInfo.frequency_9 or regionInfo.frequency_9 = 0 %}
+                                {{regionInfo.frequency_9}}
+                            {% else %}
+                                {{ '-' }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if regionInfo.sum_area_ha_9 or regionInfo.sum_area_ha_9 = 0 %}
+                                {{regionInfo.sum_area_ha_9}}
+                            {% else %}
+                                {{ '-' }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-indent:8px;" title='4 - 5 ha'>Large Neighbourhood Park 2</td>
+                        <td>
+                            {% if regionInfo.frequency_10 or regionInfo.frequency_10 = 0 %}
+                                {{regionInfo.frequency_10}}
+                            {% else %}
+                                {{ '-' }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if regionInfo.sum_area_ha_10 or regionInfo.sum_area_ha_10 = 0 %}
+                                {{regionInfo.sum_area_ha_10}}
+                            {% else %}
+                                {{ '-' }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-indent:8px;" title='5 - 7 ha'>District Park 1</td>
+                        <td>
+                            {% if regionInfo.frequency_11 or regionInfo.frequency_11 = 0 %}
+                                {{regionInfo.frequency_11}}
+                            {% else %}
+                                {{ '-' }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if regionInfo.sum_area_ha_11 or regionInfo.sum_area_ha_11 = 0 %}
+                                {{regionInfo.sum_area_ha_11}}
+                            {% else %}
+                                {{ '-' }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-indent:8px;" title='7 - 15 ha'>District Park 2</td>
+                        <td>
+                            {% if regionInfo.frequency_12 or regionInfo.frequency_12 = 0 %}
+                                {{regionInfo.frequency_12}}
+                            {% else %}
+                                {{ '-' }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if regionInfo.sum_area_ha_12 or regionInfo.sum_area_ha_12 = 0 %}
+                                {{regionInfo.sum_area_ha_12}}
+                            {% else %}
+                                {{ '-' }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-indent:8px;" title='> 15 ha'>Regional Park</td>
+                        <td>
+                            {% if regionInfo.frequency_13 or regionInfo.frequency_13 = 0 %}
+                                {{regionInfo.frequency_13}}
+                            {% else %}
+                                {{ '-' }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if regionInfo.sum_area_ha_13 or regionInfo.sum_area_ha_13 = 0 %}
+                                {{regionInfo.sum_area_ha_13}}
+                            {% else %}
+                                {{ '-' }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="color:#77933C; font-weight:bold;" title='Natural'>Natural</td>
+                        <td>
+                            {% if regionInfo.frequency_2 or regionInfo.frequency_2 = 0 %}
+                                {{regionInfo.frequency_2}}
+                            {% else %}
+                                {{ '-' }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if regionInfo.sum_area_ha_2 or regionInfo.sum_area_ha_2 = 0 %}
+                                {{regionInfo.sum_area_ha_2}}
+                            {% else %}
+                                {{ '-' }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="color:#77933C; font-weight:bold;" title='Residual Green Space'>Residual Green Space</td>
+                        <td>
+                            {% if regionInfo.frequency_3 or regionInfo.frequency_3 = 0 %}
+                                {{regionInfo.frequency_3}}
+                            {% else %}
+                                {{ '-' }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if regionInfo.sum_area_ha_3 or regionInfo.sum_area_ha_3 = 0 %}
+                                {{regionInfo.sum_area_ha_3}}
+                            {% else %}
+                                {{ '-' }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="color:#77933C; font-style:italic; font-weight:bold;" title='Parks, Natural and Residual Green Space'>Total POS</td>
+                        <td>
+                            {% if regionInfo.frequency_14 or regionInfo.frequency_14 = 0 %}
+                                {{regionInfo.frequency_14}}
+                            {% else %}
+                                {{ '-' }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if regionInfo.sum_area_ha_14 or regionInfo.sum_area_ha_14 = 0 %}
+                                {{regionInfo.sum_area_ha_14}}
+                            {% else %}
+                                {{ '-' }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="color:#77933C; font-weight:bold;" title='School Grounds'>School Grounds</td>
+                        <td>
+                            {% if regionInfo.frequency_4 or regionInfo.frequency_4 = 0 %}
+                                {{regionInfo.frequency_4}}
+                            {% else %}
+                                {{ '-' }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if regionInfo.sum_area_ha_4 or regionInfo.sum_area_ha_4 = 0 %}
+                                {{regionInfo.sum_area_ha_4}}
+                            {% else %}
+                                {{ '-' }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="color:#77933C; font-style:italic; font-weight:bold;" title='Parks, Natural, Residual Green Space and School Grounds'>Total POS + School Grounds</td>
+                        <td>
+                            {% if regionInfo.frequency_15 or regionInfo.frequency_15 = 0 %}
+                                {{regionInfo.frequency_15}}
+                            {% else %}
+                                {{ '-' }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if regionInfo.sum_area_ha_15 or regionInfo.sum_area_ha_15 = 0 %}
+                                {{regionInfo.sum_area_ha_15}}
+                            {% else %}
+                                {{ '-' }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+                <div id="tabs-2">
+                        <table id = "general" style="table-layout:fixed; margin:0px;">
+                                <thead>
+                                    <tr>
+                                        <th style="width:180px;">Class</th>
+                                        <th style="width:50px;" title="The % of the total park area by each park classification" alt="The % of the total park area by each park classification">% Park Area</th>
+                                        <th style="width:50px;" title="The area of each POS type as a % of the total area of POS" alt="The area of each POS type as a % of the total area of POS">% POS Area</th>
+                                        {% if region.type == 'LGA' %}
+                                                <th style="width:50px;" title="The area of all POS as a % of the area of the LGA/suburb area" alt="The area of all POS as a % of the area of the LGA/suburb area">% LGA Area</th>
+                                        {% elif region.type == 'SUB' %}
+                                                <th style="width:50px;">% Suburb Area</th>
+                                        {% elif region.type == 'USER' or region.type == 'SP' %}
+                                                <th style="width:50px;">% Project Area</th>
+                                        {% endif %}
+                                    </tr>
+                                </thead>
+                                <tr>
+                                    <td style="color:#77933C; font-weight:bold;" title='All Parks'>Parks</td>
+                                    <td>
+                                        {% if regionInfo.percentpark_1 or regionInfo.percentpark_1 = 0 %}
+                                            {{regionInfo.percentpark_1}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if regionInfo.percentpos_1 or regionInfo.percentpos_1 = 0 %}
+                                            {{regionInfo.percentpos_1}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if regionInfo.percentsublga_1 or regionInfo.percentsublga_1 = 0 %}
+                                            {{regionInfo.percentsublga_1}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-indent:8px;" title='0 - 0.3 ha'>Pocket Park</td>
+                                    <td>
+                                        {% if regionInfo.percentpark_6 or regionInfo.percentpark_6 = 0 %}
+                                            {{regionInfo.percentpark_6}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if regionInfo.percentpos_6 or regionInfo.percentpos_6 = 0 %}
+                                            {{regionInfo.percentpos_6}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if regionInfo.percentsublga_6 or regionInfo.percentsublga_6 = 0 %}
+                                            {{regionInfo.percentsublga_6}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-indent:8px;" title='0.3 - 1 ha'>Small Neighbourhood Park</td>
+                                    <td>
+                                        {% if regionInfo.percentpark_7 or regionInfo.percentpark_7 = 0 %}
+                                            {{regionInfo.percentpark_7}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if regionInfo.percentpos_1 or regionInfo.percentpos_7 = 0 %}
+                                            {{regionInfo.percentpos_7}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if regionInfo.percentsublga_7 or regionInfo.percentsublga_7 = 0 %}
+                                            {{regionInfo.percentsublga_7}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-indent:8px;" title='1 - 2 ha'>Medium Neighbourhood Park</td>
+                                    <td>
+                                        {% if regionInfo.percentpark_8 or regionInfo.percentpark_8 = 0 %}
+                                            {{regionInfo.percentpark_8}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if regionInfo.percentpos_8 or regionInfo.percentpos_8 = 0 %}
+                                            {{regionInfo.percentpos_8}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if regionInfo.percentsublga_8 or regionInfo.percentsublga_8 = 0 %}
+                                            {{regionInfo.percentsublga_8}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-indent:8px;" title='2 - 4 ha'>Large Neighbourhood Park 1</td>
+                                    <td>
+                                        {% if regionInfo.percentpark_9 or regionInfo.percentpark_9 = 0 %}
+                                            {{regionInfo.percentpark_9}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if regionInfo.percentpos_9 or regionInfo.percentpos_9 = 0 %}
+                                            {{regionInfo.percentpos_9}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if regionInfo.percentsublga_9 or regionInfo.percentsublga_9 = 0 %}
+                                            {{regionInfo.percentsublga_9}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-indent:8px;" title='4 - 5 ha'>Large Neighbourhood Park 2</td>
+                                    <td>
+                                        {% if regionInfo.percentpark_10 or regionInfo.percentpark_10 = 0 %}
+                                            {{regionInfo.percentpark_10}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if regionInfo.percentpos_10 or regionInfo.percentpos_10 = 0 %}
+                                            {{regionInfo.percentpos_10}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if regionInfo.percentsublga_10 or regionInfo.percentsublga_10 = 0 %}
+                                            {{regionInfo.percentsublga_10}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-indent:8px;" title='5 - 7 ha'>District Park 1</td>
+                                    <td>
+                                        {% if regionInfo.percentpark_11 or regionInfo.percentpark_11 = 0 %}
+                                            {{regionInfo.percentpark_11}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if regionInfo.percentpos_11 or regionInfo.percentpos_11 = 0 %}
+                                            {{regionInfo.percentpos_11}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if regionInfo.percentsublga_11 or regionInfo.percentsublga_11 = 0 %}
+                                            {{regionInfo.percentsublga_11}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-indent:8px;" title='7 - 15 ha'>District Park 2</td>
+                                    <td>
+                                        {% if regionInfo.percentpark_12 or regionInfo.percentpark_12 = 0 %}
+                                            {{regionInfo.percentpark_12}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if regionInfo.percentpos_12 or regionInfo.percentpos_12 = 0 %}
+                                            {{regionInfo.percentpos_12}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if regionInfo.percentsublga_12 or regionInfo.percentsublga_12 = 0 %}
+                                            {{regionInfo.percentsublga_12}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-indent:8px;" title='> 15 ha'>Regional Park</td>
+                                    <td>
+                                        {% if regionInfo.percentpark_13 or regionInfo.percentpark_13 = 0 %}
+                                            {{regionInfo.percentpark_13}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if regionInfo.percentpos_13 or regionInfo.percentpos_13 = 0 %}
+                                            {{regionInfo.percentpos_13}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if regionInfo.percentsublga_13 or regionInfo.percentsublga_13 = 0 %}
+                                            {{regionInfo.percentsublga_13}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="color:#77933C; font-weight:bold;" title='Natural'>Natural</td>
+                                    <td>-</td>
+                                    <td>
+                                        {% if regionInfo.percentpos_2 or regionInfo.percentpos_2 = 0 %}
+                                            {{regionInfo.percentpos_2}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if regionInfo.percentsublga_2 or regionInfo.percentsublga_2 = 0 %}
+                                            {{regionInfo.percentsublga_2}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="color:#77933C; font-weight:bold;" title='Residual Green Space'>Residual Green Space</td>
+                                    <td>-</td>
+                                    <td>
+                                        {% if regionInfo.percentpos_3 or regionInfo.percentpos_3 = 0 %}
+                                            {{regionInfo.percentpos_3}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if regionInfo.percentsublga_3 or regionInfo.percentsublga_3 = 0 %}
+                                            {{regionInfo.percentsublga_3}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="color:#77933C; font-style:italic; font-weight:bold;" title='Parks, Natural and Residual Green Space'>Total POS</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>
+                                        {% if regionInfo.percentsublga_14 or regionInfo.percentsublga_14 = 0 %}
+                                            {{regionInfo.percentsublga_14}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="color:#77933C; font-weight:bold;" title='School Grounds'>School Grounds</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>
+                                        {% if regionInfo.percentsublga_4 or regionInfo.percentsublga_4 = 0 %}
+                                            {{regionInfo.percentsublga_4}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="color:#77933C; font-style:italic; font-weight:bold;" title='Parks, Natural, Residual Green Space and School Grounds'>Total POS + School Grounds</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>
+                                        {% if regionInfo.percentsublga_15 or regionInfo.percentsublga_15 = 0 %}
+                                            {{regionInfo.percentsublga_15}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                        </table>
+                </div>
+                <div id="tabs-3">
+                        <table id = "general" style="table-layout:fixed; margin:0px;">
+                                <thead>
+                                    <tr>
+                                        <th style="width:100px;" rowspan="2">Class</th>
+                                        <th colspan="2">Population Catchment</th>
+                                    </tr>
+                                    <tr>
+                                        <th title="Catchment size" alt="Catchment size">Distance</th>
+                                        <th title="% LGA/suburb population within the park catchment area" alt="% LGA/suburb population within the park catchment area">% Population</th>
+                                    </tr>
+                                </thead>
+                                <tr>
+                                    <td style="color:#77933C; font-weight:bold;" title='All Parks'>Parks</td>
+                                    <td></td>
+                                    <td>
+                                        {% if regionInfo.percenttotalpop_1 or regionInfo.percenttotalpop_1 = 0 %}
+                                            {{regionInfo.percenttotalpop_1}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-indent:8px;" title='0 - 0.3 ha'>Pocket Park</td>
+                                    <td>
+                                        {% if regionInfo.typedistance_6 or regionInfo.typedistance_6 = 0 %}
+                                            {{regionInfo.typedistance_6}}m
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if regionInfo.percenttotalpop_6 or regionInfo.percenttotalpop_6 = 0 %}
+                                            {{regionInfo.percenttotalpop_6}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-indent:8px;" title='0.3 - 1 ha'>Small Neighbourhood Park</td>
+                                    <td>
+                                        {% if regionInfo.typedistance_7 or regionInfo.typedistance_7 = 0 %}
+                                            {{regionInfo.typedistance_7}}m
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if regionInfo.percenttotalpop_7 or regionInfo.percenttotalpop_7 = 0 %}
+                                            {{regionInfo.percenttotalpop_7}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-indent:8px;" title='1 - 2 ha'>Medium Neighbourhood Park</td>
+                                    <td>
+                                        {% if regionInfo.typedistance_8 or regionInfo.typedistance_8 = 0 %}
+                                            {{regionInfo.typedistance_8}}m
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if regionInfo.percenttotalpop_8 or regionInfo.percenttotalpop_8 = 0 %}
+                                            {{regionInfo.percenttotalpop_8}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-indent:8px;" title='2 - 4 ha'>Large Neighbourhood Park 1</td>
+                                    <td>
+                                        {% if regionInfo.typedistance_9 or regionInfo.typedistance_9 = 0 %}
+                                            {{regionInfo.typedistance_9}}m
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if regionInfo.percenttotalpop_9 or regionInfo.percenttotalpop_9 = 0 %}
+                                            {{regionInfo.percenttotalpop_9}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td style="text-indent:8px;" title='4 - 5 ha'>Large Neighbourhood Park 2</td>
+                                    <td>
+                                        {% if regionInfo.typedistance_10 or regionInfo.typedistance_10 = 0 %}
+                                            {{regionInfo.typedistance_10}}m
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if regionInfo.percenttotalpop_10 or regionInfo.percenttotalpop_10 = 0 %}
+                                            {{regionInfo.percenttotalpop_10}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-indent:8px;" title='5 - 7 ha'>District Park 1</td>
+                                    <td>
+                                        {% if regionInfo.typedistance_11 or regionInfo.typedistance_11 = 0 %}
+                                            {{regionInfo.typedistance_11}}m
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if regionInfo.percenttotalpop_11 or regionInfo.percenttotalpop_11 = 0 %}
+                                            {{regionInfo.percenttotalpop_11}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-indent:8px;" title='7 - 15 ha'>District Park 2</td>
+                                    <td>
+                                        {% if regionInfo.typedistance_12 or regionInfo.typedistance_12 = 0 %}
+                                            {{regionInfo.typedistance_12}}m
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if regionInfo.percenttotalpop_12 or regionInfo.percenttotalpop_12 = 0 %}
+                                            {{regionInfo.percenttotalpop_12}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-indent:8px;" title='> 15 ha'>Regional Park</td>
+                                    <td>
+                                        {% if regionInfo.typedistance_13 or regionInfo.typedistance_13 = 0 %}
+                                            {{regionInfo.typedistance_13}}m
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if regionInfo.percenttotalpop_13 or regionInfo.percenttotalpop_13 = 0 %}
+                                            {{regionInfo.percenttotalpop_13}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                        </table>
+                </div>
+                <div id="tabs-4">
+                        <table id = "general" style="table-layout:fixed; margin:0px;">
+                                <thead>
+                                    <tr>
+                                        <th rowspan="2">Class</th>
+                                        <th colspan="2">Population Catchment</th>
+                                    </tr>
+                                    <tr>
+                                        <th title="Catchment size" alt="Catchment size">Distance</th>
+                                        <th title="% LGA/suburb population within the park catchment area" alt="% LGA/suburb population within the park catchment area">% Population</th>
+                                    </tr>
+                                </thead>
+                                <tr>
+                                    <td style="color:#77933C; font-weight:bold;" title='All DSR POS'>DSR POS</td>
+                                    <td></td>
+                                    <td>
+                                        {% if regionInfo.percenttotalpopdsr_1 or regionInfo.percenttotalpopdsr_1 = 0%}
+                                            {{regionInfo.percenttotalpopdsr_1}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-indent:8px;" title='0.0 - 0.4 ha'>Pocket Open Space</td>
+                                    <td>
+                                        {% if regionInfo.dsrdistance_16 or regionInfo.dsrdistance_16 = 0%}
+                                            {{regionInfo.dsrdistance_16}}m
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if regionInfo.percenttotalpopdsr_16 or regionInfo.percenttotalpopdsr_16 = 0 %}
+                                            {{regionInfo.percenttotalpopdsr_16}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-indent:8px;" title='0.4 - 1 ha'>Local Open Space</td>
+                                    <td>
+                                        {% if regionInfo.dsrdistance_17 or regionInfo.dsrdistance_17 = 0 %}
+                                            {{regionInfo.dsrdistance_17}}m
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if regionInfo.percenttotalpopdsr_17 or regionInfo.percenttotalpopdsr_17 = 0 %}
+                                            {{regionInfo.percenttotalpopdsr_17}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-indent:8px;" title='1 - 5 ha'>Neighbourhood Open Space</td>
+                                    <td>
+                                        {% if regionInfo.dsrdistance_18 or regionInfo.dsrdistance_18 = 0 %}
+                                            {{regionInfo.dsrdistance_18}}m
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if regionInfo.percenttotalpopdsr_18 or regionInfo.percenttotalpopdsr_18 = 0 %}
+                                            {{regionInfo.percenttotalpopdsr_18}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-indent:8px;" title='5 - 15 ha'>District Open Space</td>
+                                    <td>
+                                        {% if regionInfo.dsrdistance_19 or regionInfo.dsrdistance_19 = 0 %}
+                                            {{regionInfo.dsrdistance_19}}m
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if regionInfo.percenttotalpopdsr_19 or regionInfo.percenttotalpopdsr_19 = 0 %}
+                                            {{regionInfo.percenttotalpopdsr_19}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-indent:8px;" title='> 15 ha'>Regional Open Space</td>
+                                    <td>
+                                        {% if regionInfo.dsrdistance_20 or regionInfo.dsrdistance_20 = 0 %}
+                                            {{regionInfo.dsrdistance_20}}m
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if regionInfo.percenttotalpopdsr_20 or regionInfo.percenttotalpopdsr_20 = 0 %}
+                                            {{regionInfo.percenttotalpopdsr_20}}%
+                                        {% else %}
+                                            {{ '-' }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                        </table>
+                </div>
+                {% endwith %}
+        </div>
+    </div>
+{% endblock content %}

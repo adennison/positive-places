@@ -1,0 +1,45 @@
+{% extends "pos/base.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+    <script type="text/javascript" src="{% static "js/jquery-1.7.2.min.js" %}"></script>
+    <link type="text/css" rel="stylesheet" href="{% static "js/jquery-ui-1.8.23.custom/css/ui-lightness/jquery-ui-1.8.23.custom.css" %}"/>
+    <script type="text/javascript" src="{% static "js/jquery-ui-1.8.23.custom/js/jquery-ui-1.8.23.custom.min.js" %}"></script>
+    <link href="{% static "css/posFaq.css" %}" rel="stylesheet" type="text/css" media="screen" />
+{% endblock head %}
+
+{% block content %}
+    <div id = "home_container" style="height: 550px; overflow-y:auto">
+        <a href="/cbeh/pos/faq/#tabs-2">Back to POS Framework</a>
+        <h2>Definition: Natural</h2>
+        <p>Natural environments include areas such as <b class="green">bushland, wetlands and coastal habitats</b> as well as <b class="green">forests and national parks</b>. These may or may not be accessible for public use. This category also includes <b class="green">conservation areas set aside to preserve biodiversity and wildlife habitats</b> by way of <b class="green">bush forever sites</b>. Some natural areas can include provision of informal tracks that allow pedestrians or cyclists but, more typically, most natural areas are not spaces that provide for, or encourage, a range of other physical activities to take place.</p>
+
+        <div style="width: 900px;" class="row-fluid">
+            <div class="span1"></div>
+            <div class="span5">
+                <a href="{% static "images/Example_Natural.jpg" %}">
+                    <img
+                    id="classsystem"
+                    alt="Park Classification System"
+                    src="{% static "images/Example_Natural.jpg" %}">
+                </a>
+                <p style="text-align:center;">Natural POS with walking tracks throughout</p>
+            </div>
+            <div class="span1"></div>
+            <div class="span5">
+                <a href="{% static "images/Example_NaturalSurroundedPark.jpg" %}">
+                    <img
+                    id="classsystem"
+                    alt="Park Classification System"
+                    src="{% static "images/Example_NaturalSurroundedPark.jpg" %}">
+                </a>
+                <p style="text-align:center;">Natural POS surrounded by Park POS</p>
+            </div>
+        </div>
+
+        <p style="text-align:center;">Source Orthoimagery: Western Australian Land Information Authority (Landgate), Aerial orthophotography 2012, Midland, Western Australia.</p>
+        <p style="text-align:center;"><b>Examples of Natural areas in POS Tool</b></p>
+
+    </div>
+{% endblock content %}

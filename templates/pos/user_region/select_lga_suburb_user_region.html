@@ -1,0 +1,105 @@
+{% extends "pos/base.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+    <script type="text/javascript" src="{% static "js/OpenLayers-2.12/OpenLayers.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/jquery-1.7.2.min.js" %}"></script>
+    <link type="text/css" rel="stylesheet" href="{% static "js/jquery-ui-1.8.23.custom/css/ui-lightness/jquery-ui-1.8.23.custom.css" %}"/>
+    <script type="text/javascript" src="{% static "js/jquery-ui-1.8.23.custom/js/jquery-ui-1.8.23.custom.min.js" %}"></script>
+    <script src="http://maps.googleapis.com/maps/api/js?sensor=false&v=3.7"></script>
+    <link rel="stylesheet" href="{% static 'js/jquery-jGrowl-1.2.13/jquery.jgrowl.css' %}" type="text/css">
+    <script type="text/javascript" src="{% static 'js/jquery-jGrowl-1.2.13/jquery.jgrowl.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/bootstrap-2.3.2/js/bootstrap.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/lga_suburb_user_region.js' %}"></script>
+{% endblock head %}
+
+{% block content %}
+
+    <div id="project_name">
+        <div class="row-fluid">
+            <div class="span8">
+                <h2>Select a suburb or LGA for scenario testing: {{ project.project_name }}</h2>
+            </div>
+        </div>
+    </div>
+
+    {% for err in errors %}
+        <div>{{ err }}</div>
+    {% endfor %}
+
+    {% if messages %}
+      <ul class="messages">
+          {% for message in messages %}
+            <script>pos.show_growl("{{ message }}")</script>
+          {% endfor %}
+      </ul>
+    {% endif %}
+
+    <!-- Define some default styles to the autocomplete dropdown -->
+    <style>
+        .ui-autocomplete {
+            max-height: 200px;
+            width: 175px;
+            overflow-y: auto;
+            /* prevent horizontal scrollbar */
+            overflow-x: hidden;
+            /* add padding to account for vertical scrollbar */
+            padding-right: 20px;
+        }
+        /* IE 6 doesn't support max-height
+         * use height instead, but this forces the menu to always be this tall
+         */
+        * html .ui-autocomplete {
+            height: 200px;
+        }
+    </style>
+
+    <p>Choose to view the summary statistics for the suburb or LGA or choose to go to the scenario calculator</p>
+    <br>
+    <div class="row-fluid">
+        <div class="span8">
+            <div id="suburb_list">
+                <!-- Suburbs / LGAs Autocomplete Text Box Search -->
+                <form name="region_name" method="POST" action="{% url 'pos.views.search.search' %}">
+                {% csrf_token %}
+                    <fieldset>
+                    <legend>Suburb or Local Government Area</legend>
+                        <div class="region_search_ui_widget">
+                            <input id="region_labels" placeholder="Enter a suburb or local government" type="text" name="region_name" onkeypress="return pos.lga_suburb_user_region.disableEnterKey(event)" style="width:500px;height:15px; font-size:15px;" />
+                            <input type="hidden" id="region_values" name="region_pk"/>
+                            <input type="hidden" id="user_region_pk" name="user_region_pk" value="{{ userRegionPk }}"/>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+        <div class="span4">
+            <h2>
+                <a href="" class="btn btn-primary normal-weight" id="view_stats_button">View Stats</a>
+                <a href="{% url 'scenario_modelling' project.pk %}" class="btn btn-primary normal-weight" id="scenario_calculator_button">Scenario Calculator</a>
+            </h2>
+        </div>
+        <div class="row-fluid">
+            <div class="span4 offset8">
+                <img id="progress_display" alt="Upload Progress" style="display: none;" class="center" width="280" height="20"
+                src="{% static "js/jquery-ui-1.8.23.custom/css/ui-lightness/ajax_indeterminate_loading_bar.gif" %}">
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span4 offset8">
+                <div id="upload_text" style="display: none;">
+                    Getting statistics for your selected region.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        jQuery(window).load(function() {
+            pos.lga_suburb_user_region.store_wkt("{{userRegionWkt}}");
+            pos.lga_suburb_user_region.search_box();
+        });
+    </script>
+
+{% endblock content %}

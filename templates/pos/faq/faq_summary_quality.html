@@ -1,0 +1,18 @@
+{% extends "pos/base.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+    <script type="text/javascript" src="{% static "js/jquery-1.7.2.min.js" %}"></script>
+	<link type="text/css" rel="stylesheet" href="{% static "js/jquery-ui-1.8.23.custom/css/ui-lightness/jquery-ui-1.8.23.custom.css" %}"/>
+    <script type="text/javascript" src="{% static "js/jquery-ui-1.8.23.custom/js/jquery-ui-1.8.23.custom.min.js" %}"></script>
+    <link href="{% static "css/posFaq.css" %}" rel="stylesheet" type="text/css" media="screen" />
+{% endblock head %}
+
+{% block content %}
+	<div id = "home_container">
+		<a href="/cbeh/pos/faq/#tabs-5">Back to FAQ</a>
+		<h2>Park quality / attractiveness score</h2>
+		<p>Please bear with us whilst we continue to develop this measure.  For more information please contact us at: <a class="underline" href="mailto:postool-sph@uwa.edu.au?Subject=POS%20Tool%20Query" target="_top">postool-sph@uwa.edu.au</a></p>
+	</div>
+{% endblock content %}

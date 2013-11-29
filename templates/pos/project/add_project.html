@@ -1,0 +1,42 @@
+{% extends "pos/base.html" %}
+
+{% block title %}Add Project{% endblock %}
+
+{% block content %}
+    <h2>Name your new project</h2>
+
+    {# Add any success/error feedback messages #}
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <h2> <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li> </h2>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <form action='{% url "pos.views.project.add_project" %}' enctype='multipart/form-data' method="post">
+    {% csrf_token %}
+        <div id="suburb_list">
+            <fieldset>
+                {{ projectForm.non_field_errors }}
+                {# Create the labels, input fields, and error messages #}
+                <table>
+                    <tr>
+                        <div class="fieldWrapper">
+                            <td><label for="id_project_name">{{projectForm.project_name.label|title}}:</label></td>
+                            <td>{{ projectForm.project_name }}</td>
+                            <td id="errors">{{ projectForm.project_name.errors }}</td>
+                        </div>
+                    </tr>
+                </table>
+                {# Hidden inputs #}
+                <input type="hidden" name="next" value="{{ next_url }}">
+                <input type="hidden" name="from_region_pk">
+                {# Submit Button #}
+                <div id="create_user_submit">
+                    <input type="submit" id="submit_button" value="Add New Project">
+                </div>
+            </fieldset>
+        </div>
+    </form>
+{% endblock %}

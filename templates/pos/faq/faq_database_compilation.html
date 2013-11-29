@@ -1,0 +1,48 @@
+{% extends "pos/base.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+    <script type="text/javascript" src="{% static "js/jquery-1.7.2.min.js" %}"></script>
+	<link type="text/css" rel="stylesheet" href="{% static "js/jquery-ui-1.8.23.custom/css/ui-lightness/jquery-ui-1.8.23.custom.css" %}"/>
+    <script type="text/javascript" src="{% static "js/jquery-ui-1.8.23.custom/js/jquery-ui-1.8.23.custom.min.js" %}"></script>
+    <link href="{% static "css/posFaq.css" %}" rel="stylesheet" type="text/css" media="screen" />
+{% endblock head %}
+
+{% block content %}
+	<div id = "home_container" style="height: 550px; overflow-y: scroll;">
+		<a href="/cbeh/pos/faq/#tabs-4">Back to Database Creation</a>
+		<h2>STEP 4 - Compilation of a Final POS Layer</h2>
+
+		<p>After completion of the POSDAT park audit and the amenity information had been verified, a data finalization process was undertaken to compile the layer across all 32 LGAs. LGAs were merged and checked for duplicates and any overlapping polygons were checked and fixed.</p>
+
+		<p>A spatial database (i.e., polygons) containing the location of Bush Forever sites (Department of Planning, 2007) was added into the merged POS layer and coded into the ‘Natural’ category. Any POS coded as natural or park that contained or was adjacent to a bush forever site was coded so that it could be identified.</p>
+
+		<p>Following the above steps, all POS areas were re-attributed, standardized and re-verified against the POSDAT information. Parks were classified and any parks found adjacent to a ‘Club’ or ‘Pay facility’ were coded to enable their identification.</p>
+
+		<h2>Handling of POS Crossing Administrative Boundaries</h2>
+		<p>The boundaries of all four categories of POS (i.e. Parks, Natural, School Playgrounds and Residual green spaces) do not necessarily adhere (align) to the suburb or LGA administrative boundaries. Therefore decisions were required on how to assign the area of the POS that fell within adjacent/multiple LGA’s or suburbs (i.e. to each LGA or Suburb it crossed) for the purpose of calculating the Summary Statistics. How this was handled is particularly important for areas classified as Parks as the method used could change the parks size and thus the park’s classification (which is based on area). The following decisions were applied:</p>
+
+		<p class="green">For calculating Park Area statistics (i.e., POS general summary statistics)</p>  
+		<p>Where park polygons crossed adjacent LGA or Suburb boundary lines, only the actual area of the park polygon within the different LGA’s/suburbs was allocated to the respective LGA or Suburb (see Figures A and B below). This method avoids inflating the park area calculated for the each of the administrative units. It also allows a more accurate estimate of total area of POS across administrative boundaries as double counting of the same park area is avoided. Note, as per above, the reduced size of park within a unit does not affect the park classification.</p>
+
+		<p class="green">For Park Size Classifications</p>  
+		<p>All park areas were classified. Where a park area crossed an LGA or suburb boundary, the original Park Size Classification assigned to the park polygon based on the size of its intact boundaries was retained to the respective (split) parts located within and assigned to the respective LGAs/suburbs.</p>
+
+		<p>This method means <u>the user cannot sum the (summary) output data of counts of different POS types cross individual LGAs (or suburbs)</u> to identify the total number of parks in a wider region. For the reasons outlined above, parks that crossed multiple administrative units were counted separately in each of the respective units it crossed. Simply summing the number of parks across adjacent municipalities then would mean that these parks would be double counted, therefore over representing the true number of parks across a wider region.</p>
+		
+		<p>In Figure A, a park identified and classified as a Large Neighbourhood Park 1 crosses the boundaries of two LGAs - the City of Cockburn and the City of Armadale. The original, intact, area of the park is 2.91 ha. However, for the purposes of computing the area of POS within each LGA, when split by the LGA boundaries (Figure B), 0.75 ha of the park is attributed to the City of Cockburn, and 2.22 ha attributed to the City of Armadale. Both LGAs are recorded as having a park based on the intact size classification (i.e., a Large Neighbourhood Park).</p>
+
+		<a href="{% static "images/Maps_WebContent_CutBoundary.jpg" %}"><img
+			id="classsystem"
+			alt="Park Classification System"
+			src="{% static "images/Maps_WebContent_CutBoundary.jpg" %}"
+		></a>
+
+		<p>A - Large neighbourhood park crosses into two LGA boundaries</p>
+		<p>B - For the purposes of POS area statistics – the relevant areas of the park that fall within each LGA are assigned to those LGAs. Both LGAs are attributed as having a large neighbourhood park.</p>
+	
+		
+		<p><b>Splitting park polygons by administrative boundaries: assigning areas of POS and retaining original park size classifications</b></p> 
+		</div>
+{% endblock content %}

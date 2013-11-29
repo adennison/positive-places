@@ -1,0 +1,37 @@
+{% extends "pos/base.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+{% endblock head %}
+
+{% block content %}
+
+<h2>{{ state }}</h2>
+<ul>
+	<li><legend>Define and create your own specific area of interest to calculate POS summary data</legend></li>
+	<li><legend>Test future scenarios such as the impact of population growth on current provision of parks and POS provision</legend></li>
+</ul>
+
+<!-- Area Container -->
+<div id = "suburb_list">
+	<form method="POST" action="{% url 'pos.views.login.login_user' %}">
+	{% csrf_token %}
+		{% if next %}
+			<input type="hidden" name="next" value="{{ next }}"/>
+		{% endif %}
+		<legend>Username:</legend>
+		<input type="text" name="username" value="{{ username}}"/><br/>
+		</br><legend>Password:</legend>
+		<input type="password" name="password" value=""/>
+		{% if redirect_url != '' %}
+			<input type="hidden" name="redirect_path" value="{{ redirect_url }}"/>
+		{% endif %}
+		<input type="submit" value="Log In"/>
+	</form>
+	<p></p>
+	<p><a class="underline" href="/cbeh/pos/user/register/">New to POS Tool? Click here to register</a></p>
+	<p><a class="underline" href="/cbeh/pos/accounts/password/reset/">Click here if you forgot your password</a></p>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,64 @@
+{% extends "pos/base.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+    <script type="text/javascript" src="{% static "js/jquery-1.7.2.min.js" %}"></script>
+    <link type="text/css" rel="stylesheet" href="{% static "js/jquery-ui-1.8.23.custom/css/ui-lightness/jquery-ui-1.8.23.custom.css" %}"/>
+    <script type="text/javascript" src="{% static "js/jquery-ui-1.8.23.custom/js/jquery-ui-1.8.23.custom.min.js" %}"></script>
+    <link href="{% static "css/posFaq.css" %}" rel="stylesheet" type="text/css" media="screen" />
+{% endblock head %}
+
+{% block content %}
+    <div id = "home_container" style="height: 550px; overflow-y:auto">
+        <a href="/cbeh/pos/faq/#tabs-2">Back to POS Framework</a>
+        <h2>Definition: Residual Green Spaces</h2>
+        <p>Areas of POS classified as residual green space met the following criteria: <b class="green">grassed or green areas of land that were not part buffers or setbacks required by legislation along the road network (i.e., defined by the road cadastre) and did not function as a park, or may not have been identified as a park by the local government</b>. This may be due to the incompatible adjacent land uses (i.e. surrounded by dual carriage ways), poor access and/or lack of infrastructure - all of which limited the use of this space for recreational purposes. Examples of these spaces include: undeveloped land allocated or zoned for recreation purposes; access or linking routes to assist pedestrian movements between roads or adjacent areas; spaces that contribute to the aesthetics or ‘greenness’ of the street or neighbourhood. Residual green spaces may represent areas which could be improved to provide more useable POS.</p>
+
+        <div style="width: 900px;" class="row-fluid">
+            <div class="span1"></div>
+            <div class="span5">
+                <a href="{% static "images/Example_Residual.jpg" %}">
+                    <img
+                    id="classsystem"
+                    alt="Park Classification System"
+                    src="{% static "images/Example_Residual.jpg" %}">
+                </a>
+            </div>
+            <div class="span1"></div>
+            <div class="span5">
+                <a href="{% static "images/Example_Residual2.jpg" %}">
+                    <img
+                    id="classsystem"
+                    alt="Park Classification System"
+                    src="{% static "images/Example_Residual2.jpg" %}">
+                </a>
+            </div>
+        </div>
+
+        <p style="text-align:center;">Source Orthoimagery: Western Australian Land Information Authority (Landgate), Aerial orthophotography 2012, Midland, Western Australia.</p>
+        <p style="text-align:center;"><b>Examples of residual green spaces in POS Tool</b></p>
+
+        <!--<a href="{% static "images/Residual 3.jpg" %}"><img
+            id="classsystem"
+            width="100%"
+            style="margin:0px auto; display:block;"
+            alt="Park Classification System"
+            src="{% static "images/Residual 3.jpg" %}"
+        ></a>
+
+        <p style="text-align:center;">Image Source: Google Streetview<p>
+        <p style="text-align:center;">Examples of residual green spaces in POS Tool</p>
+
+        <a href="{% static "images/Residual 4.jpg" %}"><img
+            id="classsystem"
+            width="100%"
+            style="margin:0px auto; display:block;"
+            alt="Park Classification System"
+            src="{% static "images/Residual 4.jpg" %}"
+        ></a>
+
+        <p style="text-align:center;">Image Source: Google Streetview</p>
+        <p style="text-align:center;">Examples of residual green spaces in POS Tool</p>-->
+    </div>
+{% endblock content %}

@@ -1,0 +1,38 @@
+{% extends "pos/base.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+    <script type="text/javascript" src="{% static "js/jquery-1.7.2.min.js" %}"></script>
+	<link type="text/css" rel="stylesheet" href="{% static "js/jquery-ui-1.8.23.custom/css/ui-lightness/jquery-ui-1.8.23.custom.css" %}"/>
+    <script type="text/javascript" src="{% static "js/jquery-ui-1.8.23.custom/js/jquery-ui-1.8.23.custom.min.js" %}"></script>
+    <link href="{% static "css/posFaq.css" %}" rel="stylesheet" type="text/css" media="screen" />
+{% endblock head %}
+
+{% block content %}
+	<div id = "home_container" style="height: 550px; overflow-y: scroll;">
+		<a href="/cbeh/pos/faq/#tabs-5">Back to Summary Report</a>
+		<h2>Park catchment population reports</h2> 
+
+		<p>The park catchment population report tables illustrate the proportion of the total LGA or suburb population within the specified park catchment areas.</p> 
+
+		<p><em>For example, the table shown below indicates that 33.934% of residents within the City of Cockburn were within 400m walking distance of a small neighbourhood park.</em></p>
+
+		<p>The proportion of the population within any park catchment area is also indicated.</p>
+
+		<p><em>For example, the table shown below indicates that 92.054% of the population of the City of Cockburn were resident within any park catchment area.</em></p>
+
+		<p>The proportion of the population broken down by age (years) groups (0-4; 5-14; 15-19; 20-24; 25-34, etc) within the park catchments is also presented.</p>
+
+		<p>Park catchment population reports are presented for the POS Tool and DSR public open space classification framework catchment areas.</p>
+
+		<a href="{% static "images/Table_3_large.png" %}"><img
+			id="classsystem"
+			alt="Park Classification System"
+			src="{% static "images/Table_3.png" %}"
+		></a>
+
+		<p><b>Sample Park catchment population report</b></p>
+
+	</div>
+{% endblock content %}

@@ -1,0 +1,40 @@
+{% extends "pos/base.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+
+{% endblock head %}
+
+{% block content %}
+
+	<!-- Area Container -->
+	<!-- <div id = "home_container" style="height: 550px; overflow-y:auto"> -->
+	<div id = "home_container">
+		<h2>Welcome to POS Tool</h2>
+
+		<a><img id="welcomeImage" alt="Welcome Map" src="{% static "images/welcome.jpg" %}"/></a>
+
+		<p><b>POS Tool provides information on the provision and location of public open space (POS) and the facilities and amenities provided within parks across Perth and Peel.</b></p>
+
+		<p><b>For the general public</b> - POS Tool offers a quick and simple way to find local parks in your local area and see what facilities are provided. You can find your closest park or locate a park with certain facilities.</p>
+
+		<p><b>For planners and developers</b> - POS Tool can help you with your planning decisions. You can assess and visualise the spatial distribution of POS (including parks, nature and bushland) by suburb or local government authority across the Perth and Peel Metropolitan Region and analyse summary data on POS provision, park amenity, park catchment and assess gaps in current provision. In the advanced features you can analyse POS within your own identified areas of interest and “scenario test” future needs against population growth.</p>
+
+		<p><b>For researchers</b> - POS Tool provides an opportunity to assess and export POS-related information for use in research projects requiring data on POS (including parks, nature and bushland, school grounds, and residual areas). POS variables can be exported and used in combination with other datasets such as census or your own dataset.</p>
+
+		<p><b>POS Tool is brought to you by the Centre for the Built Environment and Health, based at The University of Western Australia and was funded by the Australian National Data Service. Aspects of POS Tool were made possible by research funding from the Western Australian Health Promotion Foundation (Healthway).</b></p>
+
+		<a href="http://www.planning.org.au/wacontent/awards" target="_blank"><img id="awardImage" alt="Planning Excellence 13" src="{% static "images/planning_excellence_13.jpg" %}"/></a>
+
+		<p class="green"><b>We are proud to announce that POS Tool recently received the Planning Institute of Australia’s "Best Planning Ideas - Large Project Award" at the 2013 Western Australian Planning Excellence Awards.</b></p><br>
+
+		<p class="green left_text">We thank you for your interest and patience as we continue to improve POS Tool and we welcome your feedback – please contact us at <a class="underline" href="mailto:postool-sph@uwa.edu.au?Subject=POS%20Tool%20Query" target="_top">postool-sph@uwa.edu.au</a> with any questions or suggestions on how we may help you and improve POS Tool.</p>
+
+		<p><b><a href="/cbeh/pos/search/" class="underline">Search POS Tool here</a></b></p>
+
+	</div>
+
+{% endblock content %}
+
+

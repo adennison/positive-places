@@ -1,0 +1,397 @@
+{% extends "pos/base.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+<!-- OpenLayers -->
+    <script type="text/javascript" src="{% static "js/OpenLayers-2.12/OpenLayers.js" %}"></script>
+<!-- jQuery -->
+    <script type="text/javascript" src="{% static "js/jquery-1.7.2.min.js" %}"></script>
+<!-- jQuery UI -->
+    <script type="text/javascript" src="{% static "js/jquery-ui-1.8.23.custom/js/jquery-ui-1.8.23.custom.min.js" %}"></script>
+    <link type="text/css" rel="stylesheet" href="{% static "js/jquery-ui-1.8.23.custom/css/ui-lightness/jquery-ui-1.8.23.custom.css" %}"/>
+<!-- Tree Table -->
+    <script type="text/javascript" src="{% static "js/ludo-jquery-treetable-38d8fa6/src/javascripts/jquery.treeTable.js" %}"></script>
+    <link type="text/css" rel="stylesheet" href="{% static "js/ludo-jquery-treetable-38d8fa6/src/stylesheets/jquery.treeTable.css" %}"/>
+<!-- Google API -->
+    <script src="http://maps.googleapis.com/maps/api/js?sensor=false&v=3.7"></script>
+{% endblock head %}
+
+{% block content %}
+
+    <!-- Map Container -->
+    <div id = "map_container">
+        <div id="map"></div>
+        <!-- <div id="scaleline_id"></div> -->
+            <script type="text/javascript">
+                jQuery(window).load(function() {
+                    pos.map.geoserverURL = '{{ geoserver_url }}';
+                    //pos.map.create_pos_map('map', '{{ pos.get_part_mpoly_wgs.wkt }}', '{{ pos.name }}');
+                    pos.map.create_pos_map(
+                        'map',
+                        jQuery.parseJSON('{{ pos.get_pos_list_json|escapejs }}'),
+                        jQuery.parseJSON('{{ nearestPartsListJSON|escapejs }}'),
+                        jQuery.parseJSON('{{ posTypesListJSON|escapejs }}'),
+                        '{{ latitude }}',
+                        '{{ longitude }}',
+                        '{{ nearestParksNumber }}'
+                    );
+                });
+            </script>
+
+        <div id="legend_img">
+            <a title="POS Legend">
+            <img id="legend" alt="POS Legend" src="{% static "images/legend_sml.PNG" %}">
+            </a>
+			</div>
+			<div>
+            <p><a class="reportProblem" href="mailto:postool-sph@uwa.edu.au?Subject=POS%20Tool" alt="Email us" title="Email us">Report a problem</a></p>
+		</div>
+    </div>
+
+
+    <!-- Table Container -->
+    <div id = "table_container">
+        <p><strong>Park Properties</strong><p>
+        <table id="general">
+            <tbody>
+                <tr>
+                    <th>Name</th>
+                    {% if pos.park_name = '' %}
+                        <td>Not Supplied</td>
+                    {% else %}
+                        <td>{{ pos.park_name }}</td>
+                    {% endif %}
+                </tr>
+                <tr>
+                    <th>Area &#40;Ha&#41;</th>
+                    <td>{{ pos.get_area_ha }}</td>
+                <tr>
+                    <th>Park Type</th>
+                    <td>
+                        {{pos.get_park_type_desc}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p><strong>Quality Rating</strong></p>
+        <!-- {{ pos.quality_score }} stars -->
+        (Under Development)
+        <p></p>
+
+        <table id="general">
+            <thead>
+                <tr>
+                    <th>Region</th>
+                    <th>Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Suburb</td>
+                    <td>
+                        {% for oneRegion in pos.get_suburb %}
+                            {% if oneRegion.pk %}
+                            <a href="{% url 'pos.views.region.details' pk=oneRegion.pk %}" title="{{ oneRegion.name }}">{{oneRegion.short_name|title}}</a>{% if not forloop.last %}, {% endif %}
+                            {% else %}
+                                {{ oneRegion|title }}
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>LGA</td>
+                    <td>
+                        {% for oneRegion in pos.get_lga %}
+                            {% if oneRegion.pk %}
+                            <a href="{% url 'pos.views.region.details' pk=oneRegion.pk %}" title="{{ oneRegion.name }}">{{oneRegion.short_name|title}}</a>{% if not forloop.last %}, {% endif %}
+                            {% else %}
+                                {{ oneRegion|title }}
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>City</td>
+                    <td>
+                        Perth
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    <p><strong>Facilities</strong><p>
+    <script type="text/javascript">
+        jQuery(document).ready(function() {
+            jQuery("#facilities_table").treeTable();
+        });
+    </script>
+
+        <table id="facilities_table">
+          <thead>
+            <tr>
+                <th colspan=2>Category</th>
+<!--                <th>Category</th>
+                <th>Presence</th>           -->
+                <th>Feature</th>
+                <th>Presence</th>
+            </tr>
+          </thead>
+          <tbody>
+        {% with facilityInfo=pos.get_facility_info %}
+        {% if pos.pos_dat == 1 %} <!-- Full POS DAT Survey = 1 -->
+          <tr><td style="color:#77933C; font-weight:bold">Sports and Recreation</td></tr>
+          <tr id="node-1" class="parent">
+            <td>Sporting</font></td>
+            <td>{{facilityInfo.sporting}}</td>
+          </tr>
+          <tr id="node-2" class="child-of-node-1">
+            <td></td>
+            <td></td>
+            <td>Tennis</td>
+            <td>{{facilityInfo.tennis}}</td>
+          </tr>
+          <tr id="node-3" class="child-of-node-1">
+            <td></td>
+            <td></td>
+            <td>Soccer</td>
+            <td>{{facilityInfo.soccer}}</td>
+          </tr>
+          <tr id="node-4" class="child-of-node-1">
+            <td></td>
+            <td></td>
+            <td>Football</td>
+            <td>{{facilityInfo.football}}</td>
+          <tr id="node-5" class="child-of-node-1">
+            <td></td>
+            <td></td>
+            <td>Basketball/netball courts</td>
+            <td>{{facilityInfo.netcourt}}</td>
+          </tr>
+          <tr id="node-6" class="child-of-node-1">
+            <td></td>
+            <td></td>
+            <td>Cricket</td>
+            <td>{{facilityInfo.cricket}}</td>
+          </tr>
+          <tr id="node-7" class="child-of-node-1">
+            <td></td>
+            <td></td>
+            <td>Baseball</td>
+            <td>{{facilityInfo.baseball}}</td>
+          </tr>
+          <tr id="node-8" class="child-of-node-1">
+            <td></td>
+            <td></td>
+            <td>Fitness Circuit</td>
+            <td>{{facilityInfo.fitness}}</td>
+          </tr>
+          <tr id="node-9" class="child-of-node-1">
+            <td></td>
+            <td></td>
+            <td>Basketball/netball hoops</td>
+            <td>{{facilityInfo.baskethoop}}</td>
+          </tr>
+          <tr id="node-10" class="child-of-node-1">
+            <td></td>
+            <td></td>
+            <td>Hockey</td>
+            <td>{{facilityInfo.hockey}}</td>
+          </tr>
+          <tr id="node-11" class="child-of-node-1">
+            <td></td>
+            <td></td>
+            <td>Athletics</td>
+            <td>{{facilityInfo.athletics}}</td>
+          </tr>
+          <tr id="node-12" class="child-of-node-1">
+            <td></td>
+            <td></td>
+            <td>Rugby</td>
+            <td>{{facilityInfo.rugby}}</td>
+          </tr>
+          <tr id="node-13">
+            <td>Skate Park</td>
+            <td>{{facilityInfo.skatebmx}}</td>
+          </tr>
+          <tr id="node-14" class="parent">
+            <td>Playground</td>
+            <td>{{facilityInfo.playground}}</td>
+          </tr>
+          <tr id="node-15" class="child-of-node-14">
+            <td></td>
+            <td></td>
+            <td>Shade</td>
+            <td>{{facilityInfo.playshade}}</td>
+          </tr>
+          <tr id="node-16" class="child-of-node-14">
+            <td></td>
+            <td></td>
+            <td>Fenced</td>
+            <td>{{facilityInfo.playfence}}</td>
+          </tr>
+          <tr id="node-16" class="child-of-node-14">
+            <td></td>
+            <td></td>
+            <td>Fenced</td>
+            <td>{{facilityInfo.playfence}}</td>
+          </tr>
+          <tr id="node-17">
+            <td>Adjacent Paid Sporting Facility</td>
+            <td>{{facilityInfo.adj_psf}}</td>
+          </tr>
+          <tr><td style="color:#77933C; font-weight:bold">Pets</td></tr>
+          <tr id="node-18">
+            <td>Dogs</td>
+            <td>{{facilityInfo.dogs}}</td>
+          </tr>
+          <tr><td style="color:#77933C; font-weight:bold">Nature</td></tr>
+          <tr id="node-19" class="parent">
+            <td>Water</td>
+            <td>{{facilityInfo.water}}</td>
+          </tr>
+          <tr id="node-20" class="child-of-node-19">
+            <td></td>
+            <td></td>
+            <td>Lake/Pond</td>
+            <td>{{facilityInfo.lakepond}}</td>
+          </tr>
+          <tr id="node-21" class="child-of-node-19">
+            <td></td>
+            <td></td>
+            <td>Water Fountain</td>
+            <td>{{facilityInfo.fountain}}</td>
+          </tr>
+          <tr id="node-22" class="child-of-node-19">
+            <td></td>
+            <td></td>
+            <td>Stream</td>
+            <td>{{facilityInfo.stream}}</td>
+          </tr>
+          <tr id="node-23" class="child-of-node-19">
+            <td></td>
+            <td></td>
+            <td>Wetlands</td>
+            <td>{{facilityInfo.wetland}}</td>
+          </tr>
+          <tr id="node-24">
+            <td>Grass Reticulated</td>
+            <td>{{facilityInfo.grassretic}}</td>
+          </tr>
+          <tr id="node-25">
+            <td>Gardens</td>
+            <td>{{facilityInfo.gardens}}</td>
+          </tr>
+          <tr id="node-40">
+            <td>Foreshore</td>
+            <td>{{facilityInfo.foreshore}}</td>
+          </tr>
+          <tr id="node-26">
+            <td>Trees</td>
+            <td>{{facilityInfo.trees}}</td>
+          </tr>
+          <tr id="node-27">
+            <td>Wildlife</td>
+            <td>{{facilityInfo.wildlife}}</td>
+          </tr>
+          <tr><td style="color:#77933C; font-weight:bold">General Amenities</td></tr>
+          <tr id="node-28" class="parent">
+            <td>Walking Paths</td>
+            <td>{{facilityInfo.paths}}</td>
+          </tr>
+          <tr id="node-29" class="child-of-node-28">
+            <td></td>
+            <td></td>
+            <td>Shade on Paths</td>
+            <td>{{facilityInfo.pathshade}}</td>
+          </tr>
+          <tr id="node-30">
+            <td>BBQ Facilities</td>
+            <td>{{facilityInfo.bbq}}</td>
+          </tr>
+          <tr id="node-31">
+            <td>Seating</td>
+            <td>{{facilityInfo.seat}}</td>
+          </tr>
+          <tr id="node-32">
+            <td>Picnic Tables</td>
+            <td>{{facilityInfo.picnic}}</td>
+          </tr>
+          <tr id="node-33">
+            <td>Kiosk/Cafe</td>
+            <td>{{facilityInfo.kiosk}}</td>
+          </tr>
+          <tr id="node-34">
+            <td>Public Art</td>
+            <td>{{facilityInfo.art}}</td>
+          </tr>
+          <tr id="node-35">
+            <td>Public Access Toilets</td>
+            <td>{{facilityInfo.toilets}}</td>
+          </tr>
+          <tr id="node-36">
+            <td>Car Parking</td>
+            <td>{{facilityInfo.carpark}}</td>
+          </tr>
+          <tr id="node-37" class="parent">
+            <td>Lighting</td>
+            <td>{{facilityInfo.light}}</td>
+          </tr>
+          <tr id="node-38" class="child-of-node-37">
+            <td></td>
+            <td></td>
+            <td>Lighting</td>
+            <td>{{facilityInfo.lighting}}</td>
+          </tr>
+          <tr id="node-39" class="child-of-node-37">
+            <td></td>
+            <td></td>
+            <td>Light Features</td>
+            <td>{{facilityInfo.lightfeat}}</td>
+          </tr>
+
+        {% elif pos.pos_dat == 2 %} <!-- Mini POS DAT Survey = 2 -->
+
+        <tr><td style="color:#77933C; font-weight:bold">Sports and Recreation</td></tr>
+        <tr id="node-1" class="parent">
+            <td>Playground</td>
+            <td>{{facilityInfo.playground}}</td>
+          </tr>
+          <tr id="node-2" class="child-of-node-1">
+            <td></td>
+            <td></td>
+            <td>Shade</td>
+            <td>{{facilityInfo.playshade}}</td>
+          </tr>
+          <tr id="node-3" class="child-of-node-1">
+            <td></td>
+            <td></td>
+            <td>Fenced</td>
+            <td>{{facilityInfo.playfence}}</td>
+          </tr>
+          <tr><td style="color:#77933C; font-weight:bold">Nature</td></tr>
+          <tr id="node-4">
+            <td>Grass Reticulated</td>
+            <td>{{facilityInfo.grassretic}}</td>
+          </tr>
+          <tr><td style="color:#77933C; font-weight:bold">General Amenities</td></tr>
+          <tr id="node-5">
+            <td>BBQ Facilities</td>
+            <td>{{facilityInfo.bbq}}</td>
+          </tr>
+          <tr id="node-6">
+            <td>Seating</td>
+            <td>{{facilityInfo.seat}}</td>
+          </tr>
+          <tr id="node-7">
+            <td>Picnic Tables</td>
+            <td>{{facilityInfo.picnic}}</td>
+          </tr>
+        {% endif %}
+        {% endwith %}
+          </tbody>
+        </table>
+
+    </div> <!-- end div for tables container -->
+
+{% endblock content %}

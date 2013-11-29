@@ -1,0 +1,42 @@
+{% extends "pos/base.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+    <script type="text/javascript" src="{% static "js/jquery-1.7.2.min.js" %}"></script>
+    <link type="text/css" rel="stylesheet" href="{% static "js/jquery-ui-1.8.23.custom/css/ui-lightness/jquery-ui-1.8.23.custom.css" %}"/>
+    <script type="text/javascript" src="{% static "js/jquery-ui-1.8.23.custom/js/jquery-ui-1.8.23.custom.min.js" %}"></script>
+    <link href="{% static "css/posFaq.css" %}" rel="stylesheet" type="text/css" media="screen" />
+{% endblock head %}
+
+{% block content %}
+    <div id = "home_container" style="height: 550px; overflow-y:auto">
+        <a href="/cbeh/pos/faq/#tabs-2">Back to POS Framework</a>
+        <h2>Definition: School Grounds</h2>
+        <p>Playing fields or ovals and sports courts or surfaces adjacent to and/or owned by a school or university. These may or may not be accessible for public use out of school hours. The area identified does not include the school buildings.</p>
+
+        <div style="width: 900px;" class="row-fluid">
+            <div class="span1"></div>
+            <div class="span5">
+                <a href="{% static "images/Example_School.jpg" %}">
+                    <img
+                    id="classsystem"
+                    alt="Park Classification System"
+                    src="{% static "images/Example_School.jpg" %}">
+                </a>
+            </div>
+            <div class="span1"></div>
+            <div class="span5">
+                <a href="{% static "images/Example_School2.jpg" %}">
+                    <img
+                    id="classsystem"
+                    alt="Park Classification System"
+                    src="{% static "images/Example_School2.jpg" %}">
+                </a>
+            </div>
+        </div>
+
+        <p style="text-align:center;">Source Orthoimagery: Western Australian Land Information Authority (Landgate), Aerial orthophotography 2012, Midland, Western Australia.</p>
+        <p style="text-align:center;"><b>Examples of School Grounds in POS Tool</b></p>
+    </div>
+{% endblock content %}

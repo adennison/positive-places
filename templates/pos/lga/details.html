@@ -1,0 +1,114 @@
+{% extends "pos/base.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+    <script src="{% static "js/OpenLayers-2.11/lib/OpenLayers.js" %}"></script>
+{% endblock head %}
+
+{% block content %}
+
+	<!-- Map Container -->
+	<div id = "map_container">
+		<div id="map"></div>
+			<script type="text/javascript">
+				jQuery(window).load(function() {
+					pos.map.create_map('map', '{{ lga.mpoly.wkt }}');
+				});
+			</script>
+			
+	<div id="legend_img">
+            <div id="legend_img">
+            <a title="POS Legend">
+            <img id="legend" alt="POS Legend" src="{% static "images/legend_sml.PNG" %}">
+            </a>
+			</div>
+			<div>
+            <p><a class="reportProblem" href="mailto:postool-sph@uwa.edu.au?Subject=POS%20Tool" alt="Email us" title="Email us">Report a problem</a></p>
+			</div>
+	</div>
+
+	<!-- Table Container -->
+	<div id = "table_container">
+		<p><strong>{{ lga.name }} Properties</strong><p>
+		<table>
+			<tbody>
+				<tr>
+					<th>Name</th>
+					<td>{{ lga.name }}</td>
+				</tr>
+				<tr>
+					<th>Short Name</th>
+					<td>{{ lga.short_name }}</td>
+				</tr>
+				<tr>
+					<th>Area</th>
+					<td>{{ lga.area }}</td>
+				</tr>
+				<tr>
+					<th>Population</th>
+					<td>{{ lga.population }}</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<p><strong>Suburbs</strong><p>
+		<table>
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Area</th>
+					<th>Population</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for suburb in lga.suburb_set %}
+					<tr>
+						<td><a href="{{ suburb.get_absolute_url }}">{{ suburb.name }}</a></td>
+						<td>{{ suburb.area }}</td>
+						<td>{{ suburb.population }}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+
+		<p><strong>Public Open Spaces</strong><p>
+		<table>
+			<thead>
+				<tr>
+					<th>Size</th>
+					<th>Type C</th>
+					<th>Area</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for pos in lga.pos_set.all %}
+					<tr>
+						<td><a href="{{ pos.get_absolute_url }}">{{ pos.get_size_class_display }}</a></td>
+						<td>{{ pos.get_pos_type_c_display }}</td>
+						<td>{{ pos.area }}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+	
+		<!-- Print, Export, Heatmaps -->
+	<div id = "bottom_container">
+		<div class = "small">
+			<ul id = "print">
+				<li>
+					<a href="#">PRINT DETAILS</a>
+				</li>
+				<li>
+					<a href="#">EXPORT DATA</a>
+				</li>
+			</ul>
+			<div id = "heat_map">
+				<p>Turn on heat map for service provision</p>
+				<p>Turn on heat map for public transportation</p>
+			</div>
+		</div>
+	</div>
+
+{% endblock content %}

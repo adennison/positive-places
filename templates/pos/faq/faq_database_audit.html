@@ -1,0 +1,35 @@
+{% extends "pos/base.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+    <script type="text/javascript" src="{% static "js/jquery-1.7.2.min.js" %}"></script>
+	<link type="text/css" rel="stylesheet" href="{% static "js/jquery-ui-1.8.23.custom/css/ui-lightness/jquery-ui-1.8.23.custom.css" %}"/>
+    <script type="text/javascript" src="{% static "js/jquery-ui-1.8.23.custom/js/jquery-ui-1.8.23.custom.min.js" %}"></script>
+    <link href="{% static "css/posFaq.css" %}" rel="stylesheet" type="text/css" media="screen" />
+{% endblock head %}
+
+{% block content %}
+	<div id = "home_container" style="height: 550px; overflow-y:auto">
+		<a href="/cbeh/pos/faq/#tabs-4">Back to Database Creation</a>
+		<h2>STEP 3 - Park Audit</h2>
+
+		<p>All areas classified as <b>parks</b> were audited using the <b>P</b>ublic <b>O</b>pen <b>S</b>pace <b>D</b>esktop <b>A</b>udit <b>T</b>ool (known as POSDAT) to collect information on the amenities and facilities provided within each. The POSDAT method was developed at the Centre for the Built Environment and Health as an efficient desktop auditing approach.</p>
+
+		<p>Trained auditors visually inspected each individual park for these features using aerial photography, Google Earth, and Google Streetview. Local government websites were also consulted for information on dog licensing laws, and where needed to verify the provision of park amenities. The National Public Toilet registry was also consulted as it provided further information on the provision and location of public toilets. </p>
+
+		<p>The figure below outlines the park facilities and amenities that were audited using POSDAT under the categories that appear in the <a class="underline" href="/cbeh/pos/faq/#tabs-5">Park Facility Summary outputs</a>.</p> 
+
+		<p>POSDAT has been shown to provide sufficient reliability when compared with on-ground field based auditing. For further information see Edwards N, Hooper P, Trapp G, et. al. (2013). Development of a Desktop Auditing Public Open Space Tool (POST): POSDAT. Applied Geography, 38:22-30.</p> 
+
+		<p>POSDAT is available at <a class="underline" href="http://www.sph.uwa.edu.au/research/cbeh/projects/?a=2147379">http://www.sph.uwa.edu.au/research/cbeh/projects/?a=2147379</a></p>
+
+		<a href="{% static "images/Figure_11_large.png" %}"><img
+			id="classsystem"
+			alt="Park Classification System"
+			src="{% static "images/Figure_11.png" %}"
+		></a>
+
+		<p><b>Park amenity information collected using POSDAT</b></p> 
+	</div>
+{% endblock content %}

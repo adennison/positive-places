@@ -1,0 +1,137 @@
+/*
+YUI 3.5.1 (build 22)
+Copyright 2012 Yahoo! Inc. All rights reserved.
+Licensed under the BSD License.
+http://yuilibrary.com/license/
+*/
+h1{
+	font-size:138.5%
+}
+
+h2{
+	font-size:123.1%
+}
+
+h3{
+	font-size:108%
+}
+
+h1,h2,h3{
+	margin:1em 0
+}
+
+h1,h2,h3,h4,h5,h6,strong{
+	font-weight:bold
+}
+
+abbr,acronym{
+	border-bottom:1px dotted #000;
+	cursor:help
+}
+
+em{
+	font-style:italic
+}
+
+blockquote,ul,ol,dl{
+	margin:1em
+}
+
+ol,ul,dl{
+	margin-left:2em
+}
+
+ol{
+	list-style:decimal outside
+}
+
+ul{
+	list-style:disc outside
+}
+
+dl dd{
+	margin-left:1em
+}
+
+th,td{
+	color:	#7F7F7F;
+	padding:6px
+
+}
+
+th{
+	font-weight:bold;
+	background: none repeat scroll 0 0 #BFBFBF;
+	color: #FFFFFF;
+	border: 2px solid #FFFFFF
+			-moz-border-radius: 10px;
+		border-radius: 10px;
+}
+
+caption{
+	margin-bottom:.5em;
+	text-align:center
+}
+
+p,fieldset,table,pre{
+	margin-bottom:1em
+}
+
+input[type=text],input[type=password],textarea{
+	width:25em;*width:11.9em
+}
+/* Formatting tables within the website */
+
+#input th.name {
+		width: 200px;
+		}
+
+#input th.inputs {
+		width: 300px;
+		}
+
+#general th {
+		width: 90px;
+		border: none;
+		}
+
+#general td {
+		width: 180px;
+		margin-left: 10px;
+		border: solid 1px #F7F7F7;
+		}
+
+
+
+#pos th {
+		width: 217px;
+		-moz-border-radius: 10px;
+		border-radius: 10px;
+		}
+
+#pos td {
+		width: 210px;
+		margin: 10 0 0 10px;
+		border: solid 1px #F7F7F7;
+		}
+
+#pos_dets th {
+		-moz-border-radius: 10px;
+		border-radius: 10px;
+		}
+
+#pos_dets td {
+		margin-left: 10px;
+		border: solid 1px #F7F7F7;
+		}
+
+.type {
+		width: 200px;
+		}
+
+.amount {
+		width: 110px
+		}
+
+
+#yui3-css-stamp.cssbase{display:none}

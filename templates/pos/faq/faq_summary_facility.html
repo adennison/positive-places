@@ -1,0 +1,39 @@
+{% extends "pos/base.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+    <script type="text/javascript" src="{% static "js/jquery-1.7.2.min.js" %}"></script>
+	<link type="text/css" rel="stylesheet" href="{% static "js/jquery-ui-1.8.23.custom/css/ui-lightness/jquery-ui-1.8.23.custom.css" %}"/>
+    <script type="text/javascript" src="{% static "js/jquery-ui-1.8.23.custom/js/jquery-ui-1.8.23.custom.min.js" %}"></script>
+    <link href="{% static "css/posFaq.css" %}" rel="stylesheet" type="text/css" media="screen" />
+{% endblock head %}
+
+{% block content %}
+	<div id = "home_container" style="height: 550px; overflow-y: scroll;">
+		<a href="/cbeh/pos/faq/#tabs-5">Back to Summary Report</a>
+		<h2>Facility summary reports</h2>
+		<p>This provides information on the facilities and amenities present within the parks located within the area (i.e., LGA/suburb) selected for summary.</p>  
+		<p>Data on facilities and amenities were collected using the POSDAT and are summarized in the output tables by the selected LGA or Suburb and by Park Type.</p>
+		<p>Park amenities are presented in 4 categories as shown in the park amenity information categories figure below. The output data indicate the number of parks (by type) that include each of these facilities or amenities. For more information on the data collection of the Park facility and amenities information <a class="underline" href="/cbeh/pos/faq/faq_database_audit/">Click here</a>.</p> 
+		<p>A sample facility summary table shows an example of the output for the City of Cockburn, indicating the number of parks (by type) that contain the different amenities.</p>
+
+		<a href="{% static "images/Figure_11_large.png" %}"><img
+			id="classsystem"
+
+			alt="Park Classification System"
+			src="{% static "images/Figure_11.png" %}"
+		></a>
+
+		<p><b>Park amenity information categories</b></p>
+
+
+		<a href="{% static "images/Table_2_large.png" %}"><img
+			id="classsystem"
+			alt="Park Classification System"
+			src="{% static "images/Table_2.png" %}"
+		></a>
+
+		<p ><b>Sample Facility Summary Table</b></p>
+	</div>
+{% endblock content %}

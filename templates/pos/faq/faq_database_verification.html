@@ -1,0 +1,60 @@
+{% extends "pos/base.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+    <script type="text/javascript" src="{% static "js/jquery-1.7.2.min.js" %}"></script>
+	<link type="text/css" rel="stylesheet" href="{% static "js/jquery-ui-1.8.23.custom/css/ui-lightness/jquery-ui-1.8.23.custom.css" %}"/>
+    <script type="text/javascript" src="{% static "js/jquery-ui-1.8.23.custom/js/jquery-ui-1.8.23.custom.min.js" %}"></script>
+    <link href="{% static "css/posFaq.css" %}" rel="stylesheet" type="text/css" media="screen" />
+{% endblock head %}
+
+{% block content %}
+	<div id = "home_container" style="height: 550px; overflow-y:auto">
+		<a href="/cbeh/pos/faq/#tabs-4">Back to Database Creation</a>
+		<h2>STEP 2 - Verification and Quality Control</h2>
+			<h2>Checking the base POS layer</h2>
+			
+			<p>The base layer and initial classification of each POS area was systematically reviewed by trained auditors for each of the 32 Local Government Authorities (LGA).</p>
+			<p>Using GIS mapping software, the base POS layer was examined in relation to aerial photography and a digital version of the Perth Streetsmart Directory. The base POS map was then segmented into smaller grid cells (2500 x 2500m) and visually assessed against the aerial photography.</p>
+			<p>Any missing areas of POS were added (i.e., manually digitised) and any errors relating to the POS boundaries were corrected.</p>
+			<p>Using a systematic ‘decision tree’ which provided a set of rules by which each POS area was classifications were also checked.</p>
+			<p>Google Earth and Google Streetview were also used as reference data layers to assist the trained auditors in identifying and classifying areas of POS.</p>
+
+			<h2>Coding POS that is contiguous and yet comprises different POS Classifications</h2>
+			<p>Where an area of POS contained multiple types of POS (such as natural and park), we have chosen to split (and code) the area into two new areas based on the POS classification system (i.e., natural, park, school grounds, and residual).</p>  
+			<p>Consequently, one large area of POS made up of smaller areas of POS of different categories, may ‘on the ground’ appear to be one single large park, however for our purposes they have been treated separately. For parks, this means that the size classification is applied separately to each distinct polygon.</p>
+
+			<a href="{% static "images/Maps_WebContent_POSClassificationSystem.jpg" %}"><img
+				id="classsystem"
+				alt="Park Classification System"
+				src="{% static "images/Maps_WebContent_POSClassificationSystem.jpg" %}"
+			></a>
+
+			<p><b>Example of a larger contiguous area of POS segmented and coded by the different POS classifications. The size classification of the “parks” is applied separately to each distinct polygon.</b>
+			</p>
+
+			<h2>Development of a POS Identification System</h2>
+			<p>Each polygon representing an area of POS has been given a unique identification code. This code is made up of three parts:</p>
+			<ul>  
+				<li>the LGA (represented by initials)</li>
+				<li>a unique identifier (UID)</li> 
+				<li>a PartID</li>  
+			</ul>
+			<p>The three parts are expressed as follows: LGAUID_PartID</p>
+
+			<p>Where an area of POS is made up of multiple types of POS (i.e., parks, natural, school grounds) these all have the same LGA and UID codes (i.e., indicating they are part of the same contiguous POS) but unique PartID’s (i.e., so that they can be identified in their own right).</p>
+
+			<p>Example:</p>
+			<p>In the example below, the three letter code ‘GOS’ refers to the City of Gosnells (LGA). Within the larger contiguous areas of POS, there are two parks with a natural area in-between adjoining both parks. All three adjoining areas of POS have the same UID. Each has its own unique PartID.</p>
+			<p>In this example, there is also a user-pay sporting facility adjoining one of the parks. POS Tool identifies sporting facilities where they are adjacent to parks. However, these facilities are not included in any calculations of POS areas because they are not free to use and may have other restrictions (e.g. membership requirements).</p>
+
+			<a href="{% static "images/UID_SYSTEM_legend_2.jpg" %}"><img
+				id="systemlegend"
+				alt="UID System Legend"
+				src="{% static "images/UID_SYSTEM_legend_2.jpg" %}"
+			></a>
+
+			<p><b>An Example of the Identification System used in POS Tool</b></p>
+	</div>
+{% endblock content %}

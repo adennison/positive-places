@@ -1,0 +1,38 @@
+{% extends "pos/base.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+    <script type="text/javascript" src="{% static "js/jquery-1.7.2.min.js" %}"></script>
+	<link type="text/css" rel="stylesheet" href="{% static "js/jquery-ui-1.8.23.custom/css/ui-lightness/jquery-ui-1.8.23.custom.css" %}"/>
+    <script type="text/javascript" src="{% static "js/jquery-ui-1.8.23.custom/js/jquery-ui-1.8.23.custom.min.js" %}"></script>
+    <link href="{% static "css/posFaq.css" %}" rel="stylesheet" type="text/css" media="screen" />
+{% endblock head %}
+
+{% block content %}
+	<div id = "home_container" style="height: 550px; overflow-y:auto">
+		<a href="/cbeh/pos/faq/#tabs-4">Back to Database Creation</a>
+		<h2>STEP 1 - Developing a POS Base Layer</h2>
+		<p>The first step involved compiling an initial public open space (POS) layer for the Perth Metro and Peel region for the year 2011 within a Geographic Information System (GIS).</p>
+
+		<p>The following (existing) digital data sets identifying land uses across the Perth metropolitan and Peel regions were sourced:</p> 
+
+		<ul>
+			<li>2011 spatial cadastre database (Western Australian Land Information Authority, Landgate)</li>
+			<li>Vesting reserve report (Western Australian Land Information Authority, Landgate)</li>
+			<li>A land use classification planning and land use codes (PLUC) 51 (Public Open Space), 52 (Sporting Infrastructure) and 6 (primary/rural, which includes extractive industries, farming and conservation areas) that was applied to the Valuer General’s Office (VGO) information linked with cadastral and Town Planning Scheme (TPS) data.</li> 
+			<li>A spatial dataset with the geocoded locations of all primary, secondary and tertiary school sites (compiled by CBEH GIS analysts from schools data provided by the Department of Education and the Department of Planning)</li>
+		</ul>
+
+		<p>All relevant land uses (i.e. relating to POS) from these layers were combined to create a draft set of areas representing a base layer of all potential areas of POS across the Perth and Peel regions.</p>
+
+		<p>Each potential area of POS, across the entire study area, was then visually inspected and using the digital orthophotography (obtained from Landgate) classified into the following four categories (The definitions for each category are described in the <a class="underline" href="/cbeh/pos/faq/#tabs-2">POS Framework section</a>)</p>
+
+		<ul>
+			<li>Parks</li> 
+			<li>Natural or conservation areas</li>
+			<li>School grounds</li>  
+			<li>Residual green spaces</li>
+		</ul>
+	</div>
+{% endblock content %}

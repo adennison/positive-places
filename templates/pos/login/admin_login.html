@@ -1,0 +1,27 @@
+{% extends "pos/base.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+{% endblock head %}
+
+{% block content %}
+
+<h2>{{ state }}</h2>
+
+<!-- Area Container -->
+<div id = "suburb_list">
+	<form method="POST" action="{% url 'pos.views.login.login_admin_data_upload' %}">
+	{% csrf_token %}
+		{% if next %}
+			<input type="hidden" name="next" value="{{ next }}"/>
+		{% endif %}
+		<legend>Username:</legend>
+		<input type="text" name="username" value="{{ username}}"/><br/>
+		</br><legend>Password:</legend>
+		<input type="password" name="password" value=""/>
+		<input type="submit" value="Log In"/>
+	</form>
+</div>
+
+{% endblock content %}

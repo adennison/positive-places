@@ -1,0 +1,94 @@
+{% extends "pos/base.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+<!--    <script src="http://www.openlayers.org/api/OpenLayers.js"></script> -->
+<!--    <script src="{% static "js/OpenLayers-2.11/lib/OpenLayers.js" %}"></script> -->
+    <script type="text/javascript" src="{% static "js/OpenLayers-2.12/OpenLayers.js" %}"></script>
+    <script src="http://maps.googleapis.com/maps/api/js?sensor=false&v=3.7"></script>
+{% endblock head %}
+
+{% block content %}
+
+    <!-- Map Container -->
+    <div id="map_container">
+      <div id="map"></div>
+       {% csrf_token %}
+        <script type="text/javascript">
+            jQuery(window).load(function() {
+                pos.map.geoserverURL = '{{ geoserver_url }}';
+                pos.map.create_address_map('map',
+                    jQuery.parseJSON('{{ nearestPartsListJSON|escapejs }}'),
+                    jQuery.parseJSON('{{ posTypesListJSON|escapejs }}'),
+                    '{{ latitude }}',
+                    '{{ longitude }}',
+                    '{{ nearestParksNumber }}');
+            });
+        </script>
+		<div id="legend_img">
+            <a title="POS Legend">
+            <img id="legend" alt="POS Legend" src="{% static "images/legend_sml.PNG" %}">
+            </a>
+        </div>
+        <div>
+            <p><a class="reportProblem" href="mailto:postool-sph@uwa.edu.au?Subject=POS%20Tool" alt="Email us" title="Email us">Report a problem</a></p>
+        </div>
+    </div>
+
+    <!-- Table Container -->
+    <div id = "table_container">
+        <p>You searched for:<p>
+        <p>
+            {% for addressLine in addressList %}
+                <strong>{{ addressLine }}<br/></strong>
+            {% endfor %}
+            ({{latitude_rounded}}&#176; S, {{longitude_rounded}}&#176; E)
+        </p>
+
+        <p><strong>Your nearest parks</strong> (as the crow flies)<strong>:</strong><p>
+            <table id="pos">
+                <thead>
+                    <tr>
+                        <th>Park Name</th>
+                        <th>Distance</th>
+                        <th><span title="Under Development">Quality Score</span></th>
+                        <th>Categories</th>
+                    </tr>
+                {% for onePos in nearestPosList %}
+                    <tr id={{onePos.pos_pk}}>
+                        <td>
+                            <a href="{% url 'pos.views.pos_view.details' pk=onePos.pos_pk %}">{{onePos.name|title}}</a>
+                        </td>
+                        <td>{{onePos.distance}}</td>
+                        <!-- <td>{{onePos.quality_score}}</td> -->
+                        <td>-</td>
+                        <td>
+                        {% for category in onePos.category_list %}
+                            {{category}}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </thead>
+            </table>
+        <!-- Script for highlighting rows in table and associated park in map -->
+        <script type="text/javascript">
+            jQuery("tr").not(':first').hover(
+                function() {
+                    jQuery(this).css("background","#F0FFF0");
+                    //jQuery(this).css("font-style","italic");
+                    pos.highlightFeatureFromTable(jQuery(this).attr('id'));
+                },
+                function() {
+                    jQuery(this).css("background","");
+                    //jQuery(this).css("font-style","normal");
+                    pos.unHighlightAllFeatures();
+                }
+            );
+        </script>
+
+
+    </div>
+
+{% endblock content %}

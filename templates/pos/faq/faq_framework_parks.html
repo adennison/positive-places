@@ -1,0 +1,46 @@
+{% extends "pos/base.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+    <script type="text/javascript" src="{% static "js/jquery-1.7.2.min.js" %}"></script>
+    <link type="text/css" rel="stylesheet" href="{% static "js/jquery-ui-1.8.23.custom/css/ui-lightness/jquery-ui-1.8.23.custom.css" %}"/>
+    <script type="text/javascript" src="{% static "js/jquery-ui-1.8.23.custom/js/jquery-ui-1.8.23.custom.min.js" %}"></script>
+    <link href="{% static "css/posFaq.css" %}" rel="stylesheet" type="text/css" media="screen" />
+{% endblock head %}
+
+{% block content %}
+    <div id = "home_container" style="height: 550px; overflow-y:auto">
+        <a href="/cbeh/pos/faq/#tabs-2">Back to POS Framework</a>
+        <h2>Definition: Parks</h2>
+        <p>Areas of POS classified as “parks” are those <b class="green">with prepared grassed areas catering for a range of active and passive recreational needs and activities (including play, exercise, sport and social activities) that can be accessed free of charge by all members of the public</b>. Examples include parks, landscaped or ornamental gardens, grassed open spaces, playing fields, ovals, reserves and other freely accessible sports surfaces that allow for more structured sporting activities.</p>
+
+        <p>Parks have tended to be classified as either active or passive spaces. <b>Active spaces</b> typically provide for more formal recreational pursuits and organised sporting activities (e.g., ovals, soccer pitches). Active spaces within parks may also be hard non-green spaces, such as basketball and tennis courts which are important facilities for physical activity and exercise. <b>Passive public open spaces</b> often refer to areas with features such as lawns, trees, landscaped gardens and shrubbery, lakes, fountains, picnic areas, seating and/or walking trails that promote less active or lighter physical activities, or as places for gathering.</p>
+
+        <p>The size of a park is a major determinant of what amenities can be provided and what combinations of different uses within the park can be supported. To help users, POS Tool has developed a <a class="underline" href="/cbeh/pos/faq/#tabs-3">park classification</a> system based on the size (i.e., area) of each park. <a class="underline" href="/cbeh/pos/faq/#tabs-3">Click here for more information.</a> Importantly, the POS Tool classification allows users to cross reference between two useful but different classification systems currently available in the WA, these are the Liveable Neighbourhoods Guidelines (LNG) and the WA State Parkland Strategy documents.</p>
+
+        <div style="width: 900px;" class="row-fluid">
+            <div class="span1"></div>
+            <div class="span5">
+                <a href="{% static "images/Example_Park.jpg" %}">
+                    <img
+                    id="classsystem"
+                    alt="Park Classification System"
+                    src="{% static "images/Example_Park.jpg" %}">
+                </a>
+            </div>
+            <div class="span1"></div>
+            <div class="span5">
+                <a href="{% static "images/Example_Park2.jpg" %}">
+                    <img
+                    id="classsystem"
+                    alt="Park Classification System"
+                    src="{% static "images/Example_Park2.jpg" %}">
+                </a>
+            </div>
+        </div>
+
+        <p style="text-align:center;">Source Orthoimagery: Western Australian Land Information Authority (Landgate), Aerial orthophotography 2012, Midland, Western Australia.</p>
+        <p style="text-align:center;"><b>Examples of Parks in POS Tool</b></p>
+    </div>
+{% endblock content %}

@@ -1,0 +1,11 @@
+This is an automatically generated email, please do not reply.
+
+A new user has registered for the {{ site.name }}. Here are the user's credentials:
+
+First Name: {{ user_instance.first_name }}
+Last Name: {{ user_instance.last_name }}
+Username: {{ user_instance.username }}
+Email: {{ user_instance.email }}
+Organisation: {{ user_instance.userprofile.organisation }}
+Job: {{ user_instance.userprofile.job|title }}
+Intent To Publish Data: {{ user_instance.userprofile.intent_to_publish }}

@@ -1,0 +1,56 @@
+{% extends "pos/base.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+    
+{% endblock head %}
+
+
+{% block content %}
+
+	<!-- Area Container -->
+	<div id = "home_container" style="height: 550px; overflow-y:auto">
+	
+		<h2>Add a new User</h2> 
+
+		<form method='POST' enctype='multipart/form-data' action='{% url 'pos.views.file_upload.load_data' %}'>
+    	{% csrf_token %}
+			<table id = "data_input">
+		        <tr><td></td></tr>
+		        <tr>
+		            <td class = "name"> <font color="black">Name:</font> </td>
+		            <td class = "inputs"> <input size="35" type="text" name="name" /> </td>
+		        </tr>
+		        <tr>
+		            <td> <font color="black">Email:</font> </td>
+		            <td> <input size="35" type="email" name="emailAddress" /> </td>
+		        </tr>
+		        <!-- <tr>
+		            <td class = "name"> <font color="black">User Name:</font> </td>
+		            <td class = "inputs"> <input size="35" type="text" name="userName" /> </td>
+		        </tr> -->
+		        <tr>
+		            <td class = "name"> <font color="black">Password:</font> </td>
+		            <td class = "inputs"> <input size="35" type="password" name="password" /> </td>
+		        </tr>
+		         <tr>
+		            <td> <font color="black">Organisation:</font> </td>
+		            <td> <input size="35" type="text" name="organisation" /> </td>
+		        </tr>
+		        <tr>
+		            <td> <font color="black">Job:</font> </td>
+		            <td> <input size="35" type="text" name="job" /> </td>
+		        </tr>
+		        <tr>
+		            <td> <font color="black">Intent:</font> </td>
+		            <td> <input size="35" type="checkbox" name="intent" /> </td>
+		        </tr>
+		        <tr>
+		            <td> <input type="submit" value="Create User" onclick="showUploadProgress();"></td>
+		        </tr>
+		    </table>
+		</form>
+	</div>
+
+{% endblock content %}

@@ -1,0 +1,310 @@
+{% extends "pos/base_user_stats.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+    <script type="text/javascript" src="{% static 'js/scenario_modelling.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'js/jquery-jGrowl-1.2.13/jquery.jgrowl.css' %}" type="text/css">
+    <script type="text/javascript" src="{% static 'js/jquery-jGrowl-1.2.13/jquery.jgrowl.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/bootstrap-2.3.2/js/bootstrap.min.js' %}"></script>
+    <script type="text/javascript">
+        jQuery(window).load(function() {
+            pos.scenario_modelling.store_project_pk('{{project_pk}}');
+            pos.scenario_modelling.set_click_handlers();
+            pos.scenario_modelling.calculate_metrics();
+        });
+    </script>
+{% endblock head %}
+
+{% block content %}
+
+    <!-- Area Container -->
+    <div id="home_container">
+        <table class="scenario_modelling_table" id="general" style="table-layout:fixed;">
+            <tr>
+                <td colspan="5"><h2>Scenario Calculator: {{project_name}}</h2></td>
+                <th colspan="8">Parks</th>
+                <th>Natural</th>
+                <th>Residual Green Space</th>
+                <th>School Grounds</th>
+            </tr>
+            <tr>
+                <td colspan="3" style="font-weight:bold;">
+                    Output metrics in m&#178; / person
+                </td>
+                <td class="scenario_table_column bold_green">(m&#178;)</td>
+                <td class="bold_green">All Parks</td>
+                <td class="bold_green">Pocket Park</td>
+                <td class="bold_green">Small Neighb. Park</td>
+                <td class="bold_green">Medium Neighb. Park</td>
+                <td class="bold_green">Large Neighb. Park 1</td>
+                <td class="bold_green">Large Neighb. Park 2</td>
+                <td class="bold_green">District Park 1</td>
+                <td class="bold_green">District Park 2</td>
+                <td class="bold_green">Regional Open Space</td>
+                <td colspan="3"></td>
+
+            </tr>
+            <tr>
+                <td colspan="3" style="font-weight:bold;">
+                    Region Area: {{region.mpoly.area|floatformat:"0"}} m&#178
+                </td>
+                <td class="scenario_table_column bold_green">Current Area</td>
+                <td>{{ original_stats.parks.all_parks|floatformat:"-2" }}</td>
+                <td>{{ original_stats.parks.pocket_parks|floatformat:"-2" }}</td>
+                <td>{{ original_stats.parks.small_parks|floatformat:"-2" }}</td>
+                <td>{{ original_stats.parks.medium_parks|floatformat:"-2" }}</td>
+                <td>{{ original_stats.parks.large_parks_1|floatformat:"-2" }}</td>
+                <td>{{ original_stats.parks.large_parks_2|floatformat:"-2" }}</td>
+                <td>{{ original_stats.parks.district_parks_1|floatformat:"-2" }}</td>
+                <td>{{ original_stats.parks.district_parks_2|floatformat:"-2" }}</td>
+                <td>{{ original_stats.parks.regional_parks|floatformat:"-2" }}</td>
+                <td>{{ original_stats.parks.natural|floatformat:"-2" }}</td>
+                <td>{{ original_stats.parks.residual|floatformat:"-2" }}</td>
+                <td>{{ original_stats.parks.school_grounds|floatformat:"-2" }}</td>
+            </tr>
+            <tr>
+                <td class="bold_green">Age</td>
+                <td class="bold_green">Current Population</td>
+                <td class="bold_green">Altered Population</td>
+                <td class="scenario_table_column bold_green">Altered Area</td>
+                <td><input class="text_input" type="text" id="all_parks" name="all_parks" value={{ user_stats.all_parks|floatformat:"-2" }}></td>
+                <td><input class="text_input" type="text" id="pocket_park" name="pocket_park" value={{ user_stats.pocket_park|floatformat:"-2" }}></td>
+                <td><input class="text_input" type="text" id="small_park" name="small_park" value={{ user_stats.small_park|floatformat:"-2" }}></td>
+                <td><input class="text_input" type="text" id="medium_park" name="medium_park" value={{ user_stats.medium_park|floatformat:"-2" }}></td>
+                <td><input class="text_input" type="text" id="large_park_1" name="large_park_1" value={{ user_stats.large_park_1|floatformat:"-2" }}></td>
+                <td><input class="text_input" type="text" id="large_park_2" name="large_park_2" value={{ user_stats.large_park_2|floatformat:"-2" }}></td>
+                <td><input class="text_input" type="text" id="district_park_1" name="district_park_1" value={{ user_stats.district_park_1|floatformat:"-2" }}></td>
+                <td><input class="text_input" type="text" id="district_park_2" name="district_park_2" value={{ user_stats.district_park_2|floatformat:"-2" }}></td>
+                <td><input class="text_input" type="text" id="regional_open_space" name="regional_open_space" value={{ user_stats.regional_space|floatformat:"-2" }}></td>
+                <td><button id="reset_areas_button">Reset</button></td>
+                <td colspan="2"></td>
+            </tr>
+            <tr id="total_pop_row">
+                <td class="scenario_table_row bold_green">Total</td>
+                <td class="scenario_table_row">{{ original_stats.populations.total_pop|floatformat:"-2" }}</td>
+                <td class="scenario_table_row"><input class="text_input" type="text" id="pop_total" name="pop_total" value={{ user_stats.total_pop|floatformat:"-2" }}></td>
+                <td class="scenario_table_column scenario_table_row"></td>
+                <td class="scenario_table_row">-</td>
+                <td class="scenario_table_row">-</td>
+                <td class="scenario_table_row">-</td>
+                <td class="scenario_table_row">-</td>
+                <td class="scenario_table_row">-</td>
+                <td class="scenario_table_row">-</td>
+                <td class="scenario_table_row">-</td>
+                <td class="scenario_table_row">-</td>
+                <td class="scenario_table_row">-</td>
+                <td colspan="3"></td>
+            </tr>
+            <tr id="0_4_row">
+                <td class="bold_green">0-4</td>
+                <td>{{ original_stats.populations.age_0_4|floatformat:"-2" }}</td>
+                <td><input class="text_input" type="text" id="pop_0_4" name="pop_0_4" value={{ user_stats.age_0_4|floatformat:"-2" }}></td>
+                <td class="scenario_table_column"></td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td colspan="3"></td>
+            <tr>
+            <tr id="5_14_row">
+                <td class="bold_green">5-14</td>
+                <td>{{ original_stats.populations.age_5_14|floatformat:"-2" }}</td>
+                <td><input class="text_input" type="text" id="pop_5_14" name="pop_5_14" value={{ user_stats.age_5_14|floatformat:"-2" }}></td>
+                <td class="scenario_table_column"></td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td colspan="3"></td>
+            </tr>
+            <tr id="15_19_row">
+                <td class="bold_green">15-19</td>
+                <td>{{ original_stats.populations.age_15_19|floatformat:"-2" }}</td>
+                <td><input class="text_input" type="text" id="pop_15_19" name="pop_15_19" value={{ user_stats.age_15_19|floatformat:"-2" }}></td>
+                <td class="scenario_table_column"></td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td colspan="3"></td>
+            </tr>
+            <tr id="20_24_row">
+                <td class="bold_green">20-24</td>
+                <td>{{ original_stats.populations.age_20_24|floatformat:"-2" }}</td>
+                <td><input class="text_input" type="text" id="pop_20_24" name="pop_20_24" value={{ user_stats.age_20_24|floatformat:"-2" }}></td>
+                <td class="scenario_table_column"></td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td colspan="3"></td>
+            </tr>
+            <tr id="25_34_row">
+                <td class="bold_green">25-34</td>
+                <td>{{ original_stats.populations.age_25_34|floatformat:"-2" }}</td>
+                <td><input class="text_input" type="text" id="pop_25_34" name="pop_25_34" value={{ user_stats.age_25_34|floatformat:"-2" }}></td>
+                <td class="scenario_table_column"></td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td colspan="3"></td>
+            </tr>
+            <tr id="35_44_row">
+                <td class="bold_green">35-44</td>
+                <td>{{ original_stats.populations.age_35_44|floatformat:"-2" }}</td>
+                <td><input class="text_input" type="text" id="pop_35_44" name="pop_35_44" value={{ user_stats.age_35_44|floatformat:"-2" }}></td>
+                <td class="scenario_table_column"></td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td colspan="3"></td>
+            </tr>
+            <tr id="45_54_row">
+                <td class="bold_green">45-54</td>
+                <td>{{ original_stats.populations.age_45_54|floatformat:"-2" }}</td>
+                <td><input class="text_input" type="text" id="pop_45_54" name="pop_45_54" value={{ user_stats.age_45_54|floatformat:"-2" }}></td>
+                <td class="scenario_table_column"></td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td colspan="3"></td>
+            </tr>
+            <tr id="55_64_row">
+                <td class="bold_green">55-64</td>
+                <td>{{ original_stats.populations.age_55_64|floatformat:"-2" }}</td>
+                <td><input class="text_input" type="text" id="pop_55_64" name="pop_55_64" value={{ user_stats.age_55_64|floatformat:"-2" }}></td>
+                <td class="scenario_table_column"></td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td colspan="3"></td>
+            </tr>
+            <tr id="65_74_row">
+                <td class="bold_green">65-74</td>
+                <td>{{ original_stats.populations.age_65_74|floatformat:"-2" }}</td>
+                <td><input class="text_input" type="text" id="pop_65_74" name="pop_65_74" value={{ user_stats.age_65_74|floatformat:"-2" }}></td>
+                <td class="scenario_table_column"></td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td colspan="3" style="font-weight:bold;">
+                    Conversion formulas:
+                </td>
+            </tr>
+            <tr id="75_84_row">
+                <td class="bold_green">75-84</td>
+                <td>{{ original_stats.populations.age_75_84|floatformat:"-2" }}</td>
+                <td><input class="text_input" type="text" id="pop_75_84" name="pop_75_84" value={{ user_stats.age_75_84|floatformat:"-2" }}></td>
+                <td class="scenario_table_column"></td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td colspan="3" style="font-weight:bold;">
+                    1 m&#178; = 0.0001 hectares
+                </td>
+            </tr>
+            <tr id="85_plus_row">
+                <td class="bold_green">85+</td>
+                <td>{{ original_stats.populations.age_85_plus|floatformat:"-2" }}</td>
+                <td><input class="text_input" type="text" id="pop_85_plus" name="pop_85_plus" value={{ user_stats.age_85_plus|floatformat:"-2" }}></td>
+                <td class="scenario_table_column"></td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td colspan="3" style="font-weight:bold;">
+                    1 m&#178; = 0.000247 acres
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"></td>
+                <td><button id="reset_populations_button">Reset</button></td>
+                <td colspan="13"></td>
+            </tr>
+            <tr>
+                <td colspan="2"><button id="calculate_button">Calculate Metrics</button></td>
+                <td colspan="2"><button id="save_stat_button">Save</button></td>
+                <td colspan="2">
+                    <form name="stat_download" method="POST" action="{% url 'download_scenario_stats' %}">
+                    {% csrf_token %}
+                        <input
+                            type="submit"
+                            id="download_button"
+                            value="Download">
+                        <input type="hidden" id="project_pk" name="project_pk" value="{{project_pk}}"/>
+                    </form>
+                </td>
+                <!-- <td colspan="2"><button id="download_button">Download Table</button></td> -->
+                <td colspan="4"></td>
+                <td colspan="3"><a href="{% url 'load_region' region.pk %}" class="btn btn-primary normal-weight" id="view_stats_button">View Stats</a></td>
+                <td colspan="3"><a href="{% url 'manage_projects' %}" class="btn btn-primary normal-weight" id="manage_projects_button">Manage Projects</a></td>
+            </tr>
+        </table>
+
+    </div>
+
+{% endblock content %}
+
+

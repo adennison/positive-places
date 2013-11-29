@@ -1,0 +1,29 @@
+{% extends "pos/base.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+{% endblock head %}
+
+
+{% block content %}
+
+<body>
+	<!-- Area Container -->
+	<div id = "home_container">
+		<h2>Disclaimer</h2>
+
+		<p>Use of the POS Tool shall be solely at the user’s own discretion and risk and no other party</p>
+		<p>shall be liable for any damages whatsoever and howsoever caused, including where resulting from</p>
+		<p>any inaccuracy, incorrectness, unsoundness and/or unreliability in its use. The tool and data</p>
+		<p>are provided without any representation or warranty of any kind, either express or implied,</p>
+		<p>including but not limited to being of satisfactory quality or fitness for a particular purpose.</p>
+
+		<form method="POST" action="{% url 'pos.views.home.details' %}">
+		{% csrf_token %}
+			<input type="submit" value="I  Accept"/>
+		</form>	
+	</div>
+</body>
+
+{% endblock content %}
