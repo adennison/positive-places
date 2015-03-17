@@ -4,8 +4,8 @@ Public Open Spaces Amenities project. The setup procedure described in this
 document has been tested on Ubuntu 12.04 but will most likely work in most
 variants and versions of Ubuntu.
 
-To begin, checkout the project from subversion
-svn checkout http://positive-places.googlecode.com/svn/trunk/ positive-places-read-only
+To begin, checkout the project from GitHub
+git clone https://github.com/adennison/positive-places.git
 Since you are reading this document, you have probably already completed this step.
 
 Create a new bash script in the "bin/env" directory of the checkout. The script
